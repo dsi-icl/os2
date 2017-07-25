@@ -66,3 +66,5 @@ typings/
 *.launch
 .settings/
 
+# Local test server details
+tests/test.config.js
