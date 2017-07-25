@@ -1,2 +1,2 @@
-# os2
+# os²
 Open Stack Object Storage for Node.js 

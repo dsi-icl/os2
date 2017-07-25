@@ -1,0 +1,36 @@
+{
+  "name": "os2",
+  "version": "0.0.1",
+  "description": "Open stack object storage",
+  "main": "./src/index.js",
+  "scripts": {
+    "lint": "eslint src"
+  },
+  "keywords": [
+    "openstack",
+    "swift",
+    "object",
+    "storage"
+  ],
+  "author": "Jean Grizet <jean.grizet@gmail.com>",
+  "license": "MIT",
+  "readme": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tezirg/os2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Tezirg/os2/issues"
+  },
+  "homepage": "https://github.com/Tezirg/os2#readme",
+  "devDependencies": {
+    "babel-core": "6.25.0",
+    "babel-eslint": "7.2.3",
+    "babel-preset-es2015": "6.24.1",
+    "babel-preset-stage-0": "6.24.1",
+    "eslint": "4.2.0"
+  },
+  "dependencies": {
+    "request": "2.81.0"
+  }
+}
