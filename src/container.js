@@ -78,7 +78,7 @@ Container.prototype.delete = function() {
                 'X-Auth-Token': _this._account.getToken()
             }
         };
-        request(options, function(error, response, body) {
+        request(options, function(error, response, __unused__body) {
             if (error) {
                 reject(error);
                 return;
@@ -87,11 +87,17 @@ Container.prototype.delete = function() {
                 reject(new Error(response.statusMessage));
                 return;
             }
-            resolve(body);
+            resolve(true);
         });
     });
 };
 
+/**
+ * @fn setMetadata
+ * @desc Sets some metadata on this container, connected state is required
+ * @param metadata Plain js object, each key:value is a metadata field
+ * @return {Promise} resolves to true on success, on error rejects a native js Error
+ */
 Container.prototype.setMetadata = function(metadata) {
     let _this = this;
     return new Promise(function(resolve, reject) {
@@ -124,13 +130,16 @@ Container.prototype.setMetadata = function(metadata) {
                 reject(new Error(response.statusMessage));
                 return;
             }
-            resolve(metas);
+            resolve(true);
         });
     });
 };
 
-
-
+/**
+ * @fn getMetadata
+ * @desc Retrieve stored metadata for this container
+ * @return {Promise} resolve to a json object containing the metadata or rejects a js Error
+ */
 Container.prototype.getMetadata = function() {
     let _this = this;
     return new Promise(function(resolve, reject) {

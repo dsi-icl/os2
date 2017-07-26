@@ -1,13 +1,14 @@
 const testConfig = require('./test.config.js');
-const { Account, Container } = require('../src/index.js');
+const { Account, Container, Segment } = require('../src/index.js');
 
-test('Container list non existing', function(done) {
+test('Segment non-existing metadata get', function(done) {
     expect.assertions(2);
     let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         let container = new Container(account, testConfig.container_name);
-        container.listObjects().then(function(data) {
+        let obj = new Segment(container, testConfig.object_name);
+        obj.getMetadata().then(function(data) {
             done.fail(data);
         }, function(error) {
             expect(error).toBeDefined();
@@ -18,49 +19,21 @@ test('Container list non existing', function(done) {
     });
 });
 
-test('Container create', function(done) {
+test('Segment create from disk', function(done) {
     expect.assertions(2);
     let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
-    account.connect().then(function() {
+    account.connect().then(function () {
         expect(account.isConnected()).toBeTruthy();
         let container = new Container(account, testConfig.container_name);
-        container.create().then(function(data) {
-            expect(data).not.toBeNull();
-            done();
-        }, function(error) {
-            done.fail(error);
-        });
-    }, function (error) {
-        done.fail(error);
-    });
-});
-
-test('Container list empty', function(done) {
-    expect.assertions(2);
-    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
-    account.connect().then(function() {
-        expect(account.isConnected()).toBeTruthy();
-        let container = new Container(account, testConfig.container_name);
-        container.listObjects().then(function(data) {
-            expect(data).toBeDefined();
-            done();
-        }, function(error) {
-            done.fail(error);
-        });
-    }, function (error) {
-        done.fail(error);
-    });
-});
-
-test('Container get empty metadata', function(done) {
-    expect.assertions(2);
-    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
-    account.connect().then(function() {
-        expect(account.isConnected()).toBeTruthy();
-        let container = new Container(account, testConfig.container_name);
-        container.getMetadata().then(function(metadata) {
-            expect(metadata).not.toBeNull();
-            done();
+        container.create().then(function(ok) {
+            let obj = new Segment(container, testConfig.object_name);
+            const buf = Buffer.alloc(10);
+            obj.createFromDisk('./tests/test.config.js').then(function(ok) {
+                expect(ok).toBeTruthy();
+                done();
+            }, function(error) {
+                done.fail(error);
+            });
         }, function(error) {
             done.fail(error);
         });
@@ -70,14 +43,15 @@ test('Container get empty metadata', function(done) {
 });
 
 
-test('Container create metadata', function(done) {
+test('Segment setMetadata', function(done) {
     expect.assertions(2);
     let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
-    account.connect().then(function() {
+    account.connect().then(function () {
         expect(account.isConnected()).toBeTruthy();
         let container = new Container(account, testConfig.container_name);
-        container.setMetadata({test: 'test'}).then(function(update_status) {
-            expect(update_status).toBeTruthy();
+        let obj = new Segment(container, testConfig.object_name);
+        obj.setMetadata({test: 'coucou'}).then(function(ok) {
+            expect(ok).toBeTruthy();
             done();
         }, function(error) {
             done.fail(error);
@@ -87,31 +61,15 @@ test('Container create metadata', function(done) {
     });
 });
 
-test('Container set metadata', function(done) {
+test('Segment getMetadata', function(done) {
     expect.assertions(2);
     let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
-    account.connect().then(function() {
+    account.connect().then(function () {
         expect(account.isConnected()).toBeTruthy();
         let container = new Container(account, testConfig.container_name);
-        container.setMetadata({test: 'test_update'}).then(function(update_status) {
-            expect(update_status).toBeTruthy();
-            done();
-        }, function(error) {
-            done.fail(error);
-        });
-    }, function (error) {
-        done.fail(error);
-    });
-});
-
-test('Container get metadata', function(done) {
-    expect.assertions(2);
-    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
-    account.connect().then(function() {
-        expect(account.isConnected()).toBeTruthy();
-        let container = new Container(account, testConfig.container_name);
-        container.getMetadata().then(function(metadata) {
-            expect(metadata.test).toEqual('test_update');
+        let obj = new Segment(container, testConfig.object_name);
+        obj.getMetadata().then(function(data) {
+            expect(data.test).toEqual('coucou');
             done();
         }, function(error) {
             done.fail(error);
@@ -122,33 +80,21 @@ test('Container get metadata', function(done) {
 });
 
 
-test('Container delete metadata', function(done) {
-    expect.assertions(2);
-    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
-    account.connect().then(function() {
-        expect(account.isConnected()).toBeTruthy();
-        let container = new Container(account, testConfig.container_name);
-        container.setMetadata({test: ''}).then(function(update_status) {
-            expect(update_status).toBeTruthy();
-            done();
-        }, function(error) {
-            done.fail(error);
-        });
-    }, function (error) {
-        done.fail(error);
-    });
-});
-
-test('Container delete', function(done) {
+test('Segment update metadata', function(done) {
     expect.assertions(3);
     let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
-    account.connect().then(function() {
+    account.connect().then(function () {
         expect(account.isConnected()).toBeTruthy();
         let container = new Container(account, testConfig.container_name);
-        container.delete().then(function(data) {
-            expect(data).not.toBeNull();
-            expect(data).toBeTruthy();
-            done();
+        let obj = new Segment(container, testConfig.object_name);
+        obj.setMetadata({test: 'coucou_update'}).then(function(ok) {
+            expect(ok).toBeTruthy();
+            obj.getMetadata().then(function(data) {
+                expect(data.test).toEqual('coucou_update');
+                done();
+            }, function(error) {
+                done.fail(error);
+            });
         }, function(error) {
             done.fail(error);
         });
@@ -156,3 +102,40 @@ test('Container delete', function(done) {
         done.fail(error);
     });
 });
+
+test('Segment delete', function(done) {
+    expect.assertions(3);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    account.connect().then(function () {
+        expect(account.isConnected()).toBeTruthy();
+        let container = new Container(account, testConfig.container_name);
+        let obj = new Segment(container, testConfig.object_name);
+        obj.delete().then(function(ok) {
+            expect(ok).toBeTruthy();
+            container.delete().then(function(ok2) {
+                expect(ok2).toBeTruthy();
+                done();
+            }, function(error) {
+                done.fail(error);
+            });
+        }, function(error) {
+            done.fail(error);
+        });
+    }, function(error) {
+        done.fail(error);
+    });
+});
+
+/*
+test('Segment ', function(done) {
+    expect.assertions(2);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    account.connect().then(function () {
+        expect(account.isConnected()).toBeTruthy();
+        let container = new Container(account, testConfig.container_name);
+        let obj = new Segment(container, testConfig.object_name);
+    }, function (error) {
+        done.fail(error);
+    });
+});
+*/
