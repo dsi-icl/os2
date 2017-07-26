@@ -3,6 +3,7 @@ const Store = require('./store.js');
 
 function Account(store = null, username = null, password = null, storage_url = null, token = null) {
     //Init member vars
+    this._name = null;
     this._store = store;
     this._username = username;
     this._password = password;
@@ -25,10 +26,11 @@ function Account(store = null, username = null, password = null, storage_url = n
     this.setPassword = Account.prototype.setPassword.bind(this);
     this.getToken = Account.prototype.getToken.bind(this);
     this.getStorageUrl = Account.prototype.getStorageUrl.bind(this);
+    this.getName = Account.prototype.getName.bind(this);
 }
 
 /**
- * @fn fromStoreURL
+ * @fn fromUsernameAndPassword
  * @desc Alternative constructor
  * @static
  * @param storeUrl {String} An OpenStack Object Storage URL
@@ -36,9 +38,26 @@ function Account(store = null, username = null, password = null, storage_url = n
  * @param password {String} Account password
  * @return {Account}
  */
-Account.fromStoreURL = function(storeUrl, username, password) {
+Account.fromUsernameAndPassword = function(storeUrl, username, password) {
     let store = new Store(storeUrl);
     let account = new Account(store, username, password);
+    return account;
+};
+
+/**
+ * @fn fromStoreURL
+ * @desc Alternative constructor
+ * @static
+ * @param storeUrl {String} An OpenStack Object Storage URL
+ * @param name {String} Account name
+ * @param token {String} Authentication token
+ * @return {Account}
+ */
+Account.fromNameAndToken = function(storeUrl, name, token) {
+    let store = new Store(storeUrl);
+    let account = new Account(store, null, null, storeUrl + '/v1/' + name, token);
+    account._isAuth = true;
+    account._name = name;
     return account;
 };
 
@@ -87,6 +106,7 @@ Account.prototype.connect = function() {
             _this._isAuth = true;
             _this._storage_token = response.headers['x-storage-token'];
             _this._storage_url = response.headers['x-storage-url'];
+            _this._name = _this._storage_url.substr(_this._storage_url.lastIndexOf('/'));
             resolve(true);
         });
     });
@@ -129,10 +149,11 @@ Account.prototype.listContainers = function() {
             }
         };
         request(options, function(error, __unused__response, body) {
-            if (error)
+            if (error) {
                 reject(error);
-            else
-                resolve(body);
+                return;
+            }
+            resolve(body);
         });
     });
 };
@@ -309,6 +330,15 @@ Account.prototype.getStorageUrl = function() {
         return this._storage_url;
     else
         return null;
+};
+
+/**
+ * @fn getName
+ * @desc Getter a account name
+ * @return {null|String} The name if computed or defined, null otherwise
+ */
+Account.prototype.getName = function() {
+    return this._name;
 };
 
 module.exports = Account;

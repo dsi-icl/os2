@@ -3,7 +3,7 @@ const { Account, Container } = require('../src/index.js');
 
 test('Container list non existing', function(done) {
     expect.assertions(2);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         let container = new Container(account, testConfig.container_name);
@@ -20,7 +20,7 @@ test('Container list non existing', function(done) {
 
 test('Container create', function(done) {
     expect.assertions(2);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         let container = new Container(account, testConfig.container_name);
@@ -37,7 +37,7 @@ test('Container create', function(done) {
 
 test('Container list empty', function(done) {
     expect.assertions(2);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         let container = new Container(account, testConfig.container_name);
@@ -54,7 +54,7 @@ test('Container list empty', function(done) {
 
 test('Container get empty metadata', function(done) {
     expect.assertions(2);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         let container = new Container(account, testConfig.container_name);
@@ -72,7 +72,7 @@ test('Container get empty metadata', function(done) {
 
 test('Container create metadata', function(done) {
     expect.assertions(2);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         let container = new Container(account, testConfig.container_name);
@@ -89,7 +89,7 @@ test('Container create metadata', function(done) {
 
 test('Container set metadata', function(done) {
     expect.assertions(2);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         let container = new Container(account, testConfig.container_name);
@@ -106,7 +106,7 @@ test('Container set metadata', function(done) {
 
 test('Container get metadata', function(done) {
     expect.assertions(2);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         let container = new Container(account, testConfig.container_name);
@@ -124,7 +124,7 @@ test('Container get metadata', function(done) {
 
 test('Container delete metadata', function(done) {
     expect.assertions(2);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         let container = new Container(account, testConfig.container_name);
@@ -141,7 +141,7 @@ test('Container delete metadata', function(done) {
 
 test('Container delete', function(done) {
     expect.assertions(2);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         let container = new Container(account, testConfig.container_name);

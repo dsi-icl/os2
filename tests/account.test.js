@@ -1,5 +1,6 @@
 const testConfig = require('./test.config.js');
 const { Store, Account } = require('../src/index.js');
+const request = require('request');
 
 test('Account connection from Store Object', function(done) {
     expect.assertions(1);
@@ -13,9 +14,9 @@ test('Account connection from Store Object', function(done) {
     });
 });
 
-test('Account connection from StoreURL', function(done) {
+test('Account connection fromUsernameAndPassword', function(done) {
     expect.assertions(1);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         done();
@@ -24,9 +25,44 @@ test('Account connection from StoreURL', function(done) {
     });
 });
 
+test('Account connection fromNameAndToken', function(done) {
+    expect.assertions(5);
+
+    let token = '';
+    let options = {
+        method: 'GET',
+        uri : testConfig.store_url + '/auth/v1.0',
+        headers: {
+            'X-Auth-User': testConfig.account_user,
+            'X-Auth-Key': testConfig.account_password
+        }
+    };
+    request(options, function(error, response, __unused__body) {
+        expect(error).toBeNull();
+        expect(response.statusCode).toEqual(200);
+
+        if (response.headers.hasOwnProperty('x-storage-token') === false) {
+            done.fail(new Error('Token retrieve failed'));
+            return;
+        }
+
+        token = response.headers['x-storage-token'];
+        let account = Account.fromNameAndToken(testConfig.store_url, testConfig.account_name, token);
+        expect(account.isConnected()).toBeTruthy();
+        account.listContainers().then(function(containers) {
+            expect(containers).not.toBeNull();
+            expect(containers).toBeDefined();
+            done();
+        }, function(error) {
+            done.fail(error);
+        });
+
+    });
+});
+
 test('Account disconnection', function(done) {
     expect.assertions(3);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         account.disconnect().then(function(ok) {
@@ -44,7 +80,7 @@ test('Account disconnection', function(done) {
 
 test('Account disconnects on username change', function(done) {
     expect.assertions(2);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         account.setUsername('test');
@@ -58,7 +94,7 @@ test('Account disconnects on username change', function(done) {
 
 test('Account disconnects on password change', function(done) {
     expect.assertions(2);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         account.setPassword('test');
@@ -71,7 +107,7 @@ test('Account disconnects on password change', function(done) {
 
 test('Account token is null on disconnected account', function(done) {
     expect.assertions(2);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     expect(account.isConnected()).toBeFalsy();
     expect(account.getToken()).toBeNull();
     done();
@@ -79,7 +115,7 @@ test('Account token is null on disconnected account', function(done) {
 
 test('Account token is not null on connected account', function(done) {
     expect.assertions(2);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         expect(account.getToken()).not.toBeNull();
@@ -91,7 +127,7 @@ test('Account token is not null on connected account', function(done) {
 
 test('Account list containers', function(done) {
     expect.assertions(3);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         account.listContainers().then(function(containers) {
@@ -109,7 +145,7 @@ test('Account list containers', function(done) {
 
 test('Account get metadata', function(done) {
     expect.assertions(2);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         account.getMetadata().then(function(meta) {
@@ -126,7 +162,7 @@ test('Account get metadata', function(done) {
 
 test('Account create meta data', function(done) {
     expect.assertions(3);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         account.setMetadata({test: 'helloworld'}).then(function(ok) {
@@ -147,7 +183,7 @@ test('Account create meta data', function(done) {
 
 test('Account update metadata', function(done) {
     expect.assertions(3);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         account.setMetadata({test: 'helloworld_updated'}).then(function(ok) {
@@ -168,7 +204,7 @@ test('Account update metadata', function(done) {
 
 test('Account remove metadata', function(done) {
     expect.assertions(3);
-    let account = Account.fromStoreURL(testConfig.store_url, testConfig.account_user, testConfig.account_password);
+    let account = Account.fromUsernameAndPassword(testConfig.store_url, testConfig.account_user, testConfig.account_password);
     account.connect().then(function() {
         expect(account.isConnected()).toBeTruthy();
         account.setMetadata({test: '' }).then(function(ok) {

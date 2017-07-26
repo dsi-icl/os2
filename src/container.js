@@ -1,6 +1,12 @@
 const Account = require('./account.js');
 const request = require('request');
 
+/**
+ * @class Container
+ * @param account {Account} Account the container belongs to. SHOULD be in a connected state
+ * @param name {String} container name or identifier
+ * @constructor
+ */
 function Container(account, name) {
     //Init member vars
     this._name = name;
