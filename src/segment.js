@@ -1,8 +1,13 @@
 const request = require('request');
 const fs = require('fs');
-const Container = require('./container.js');
 const MemoryStream = require('memorystream');
 
+/**
+ * @class Segment
+ * @param container {Container} Container the segment is stored into
+ * @param name {String} Name of this segment
+ * @constructor
+ */
 function Segment(container, name) {
     //Init member vars
     this._container = container;

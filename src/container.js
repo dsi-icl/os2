@@ -1,4 +1,3 @@
-const Account = require('./account.js');
 const request = require('request');
 
 /**
@@ -219,7 +218,7 @@ Container.prototype.listObjects = function() {
  */
 Container.prototype.setAccount = function(account) {
     this._account = account;
-    return this._account
+    return this._account;
 };
 
 /**
