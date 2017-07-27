@@ -1,6 +1,7 @@
 const request = require('request');
 const fs = require('fs');
 const Container = require('./container.js');
+const MemoryStream = require('memorystream');
 
 function Segment(container, name) {
     //Init member vars
@@ -142,20 +143,26 @@ Segment.prototype.getContentStream = function() {
         let options = {
             method: 'GET',
             baseUrl: _this._container.getAccount().getStorageUrl(),
-            uri: _this._container.getName() + '/' + _this._name,
+            uri: _this._container.getName() + '/' + _this._name + '?multipart-manifest=get',
             headers: {
                 'X-Auth-Token': _this._container.getAccount().getToken()
             }
         };
-        request.get(options)
+        request(options)
             .on('response', function(response) {
                 if (response.statusCode !== 200) {
                     reject(new Error(response.statusMessage));
                     return;
                 }
-                //Response is of type http.incomingRequest
-                //and it implements the readableStream API
-                resolve(response);
+
+                let stream = new MemoryStream([]);
+                response.on('data', function(data) {
+                    stream.write(data);
+                });
+                response.on('end', function() {
+                    stream.end();
+                });
+                resolve(stream);
             })
             .on('error', function(error) {
                 reject(error);
@@ -163,6 +170,12 @@ Segment.prototype.getContentStream = function() {
     });
 };
 
+/**
+ * @fn getMetadata
+ * @desc Get the stored metadata on this segment
+ * @return {Promise} Resolves to js object where each key:value pair is one metadata entry,
+ * reject to js native error otherwise
+ */
 Segment.prototype.getMetadata = function() {
     let _this = this;
     return new Promise(function(resolve, reject) {
