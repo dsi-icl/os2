@@ -1,6 +1,15 @@
 const request = require('request');
 const Store = require('./store.js');
 
+/**
+ * @class Account
+ * @param store {Store} A store instance this account belongs to
+ * @param username {String} This account's username
+ * @param password {String} This account password
+ * @param storage_url {String} Exposed Object storage URL for this account
+ * @param token {String} Authentication token for this account
+ * @constructor
+ */
 function Account(store = null, username = null, password = null, storage_url = null, token = null) {
     //Init member vars
     this._name = null;
