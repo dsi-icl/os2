@@ -7,7 +7,7 @@ const request = require('request');
  * @constructor
  */
 function Container(account, name) {
-    //Init member vars
+    //Init member attributes
     this._name = name;
     this._account = account;
 
@@ -105,9 +105,9 @@ Container.prototype.setMetadata = function(metadata) {
             return;
         }
 
-        var metas = {};
+        let metas = {};
         for (let m in metadata) {
-            var meta_name = 'X-Container-Meta-' + m;
+            let meta_name = 'X-Container-Meta-' + m;
             metas[meta_name] = metadata[m];
         }
         let heads = Object.assign({}, {

@@ -9,7 +9,7 @@ const MemoryStream = require('memorystream');
  * @constructor
  */
 function Segment(container, name) {
-    //Init member vars
+    //Init member attributes
     this._container = container;
     this._name = name;
 
@@ -233,9 +233,9 @@ Segment.prototype.setMetadata = function(metadata) {
             return;
         }
 
-        var metas = {};
+        let metas = {};
         for (let m in metadata) {
-            var meta_name = 'X-Object-Meta-' + m;
+            let meta_name = 'X-Object-Meta-' + m;
             metas[meta_name] = metadata[m];
         }
         let heads = Object.assign({}, {

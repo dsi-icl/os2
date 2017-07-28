@@ -7,7 +7,7 @@ const request = require('request');
  * @constructor
  */
 function Store(url = 'http://127.0.0.1') {
-    // Init member vars
+    //Init member attributes
     this._url = url;
 
     // Bind member functions
@@ -43,10 +43,10 @@ Store.prototype.setURL = function(url) {
  * @return {Promise} Resolves to the list on success, rejects top native javascript Error otherwise
  */
 Store.prototype.info = function() {
-    var _this = this;
+    let _this = this;
 
     return new Promise(function(resolve, reject) {
-        var options = {
+        let options = {
             method: 'GET',
             baseUrl: _this._url,
             uri: '/info',

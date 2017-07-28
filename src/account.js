@@ -11,7 +11,7 @@ const Store = require('./store.js');
  * @constructor
  */
 function Account(store = null, username = null, password = null, storage_url = null, token = null) {
-    //Init member vars
+    //Init member attributes
     this._name = null;
     this._store = store;
     this._username = username;
@@ -200,7 +200,7 @@ Account.prototype.getMetadata = function() {
 
             let metas = {};
             for (let m in response.headers) {
-                if (m.toLowerCase().includes('x-account-meta-')) {//Add to metas
+                if (m.includes('x-account-meta-')) {//Add to metas
                     let meta_name = m.substr(15);
                     metas[meta_name] = response.headers[m];
                 }

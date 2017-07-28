@@ -75,8 +75,8 @@ test('SLO remove manifest and remove chunks', function(done) {
 
 afterAll(function() {
     return slo_container.delete().then(function(ok) {
-        slo_account.disconnect();
+        return slo_account.disconnect();
     }, function(error) {
-        done.fail(error.toString());
+        throw error.toString();
     });
 });

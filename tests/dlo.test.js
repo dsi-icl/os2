@@ -78,7 +78,7 @@ afterAll(function() {
     }
     return Promise.all(delete_proms).then(function(ok_array) {
         return dlo_container.delete().then(function(ok) {
-            dlo_account.disconnect();
+            return dlo_account.disconnect();
         }, function(error) {
             throw error.toString();
         });

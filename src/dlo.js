@@ -17,10 +17,9 @@ function DynamicLargeObject(container, name, prefix = 'default') {
     //Call supper constructor
     Segment.call(this, container, name);
 
-    //Init member vars
+    //Init member attributes
     this._prefix = prefix;
 
-    //Bind member functions and overloads
     this.createManifest = DynamicLargeObject.prototype.createManifest.bind(this);
     this.createFromDisk = DynamicLargeObject.prototype.createFromDisk.bind(this);
     this.createFromStream = DynamicLargeObject.prototype.createFromStream.bind(this);
@@ -190,7 +189,7 @@ DynamicLargeObject.prototype.getContentStream = function(manifest = false) {
                     stream.write(data);
                 });
                 response.on('end', function() {
-                    stream.end();
+                    stream.end(response.headers['x-object-manifest']);
                 });
                 resolve(stream);
             })
