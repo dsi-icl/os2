@@ -104,8 +104,9 @@ Segment.prototype.delete = function() {
 
 /**
  * @fn copy
- * @desc Copies this object to the destination object,
- * if the destination object is already created in the Object storage, it is replaced
+ * @desc Copies this object to the destination object.
+ * If the destination object is already created in the Object storage, it is replaced
+ * If the source segment is a Large Object, the manifest is copied, referencing the same content.
  * @param object {Segment} Destination object
  * @return {Promise} Resolves to true on success, rejects a js native Error otherwise
  */
