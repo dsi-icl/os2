@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "memorystream": "0.3.1",
-    "request": "2.81.0"
+    "request": "2.81.0",
+    "uuid": "3.1.0"
   }
 }

@@ -120,7 +120,7 @@ Segment.prototype.copy = function(object) {
         let options = {
             method: 'COPY',
             baseUrl: _this._container.getAccount().getStorageUrl(),
-            uri: '/' + _this._name,
+            uri: '/' + _this._name + '?multipart-manifest=get',
             headers: heads
         };
         request(options, function(error, response, __unused__body) {
@@ -148,7 +148,7 @@ Segment.prototype.getContentStream = function() {
         let options = {
             method: 'GET',
             baseUrl: _this._container.getAccount().getStorageUrl(),
-            uri: _this._container.getName() + '/' + _this._name + '?multipart-manifest=get',
+            uri: _this._container.getName() + '/' + _this._name,
             headers: {
                 'X-Auth-Token': _this._container.getAccount().getToken()
             }
