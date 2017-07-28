@@ -1,10 +1,15 @@
 # os²
-Open Stack Object Storage wrapper for Node.js 
+OpenStack Object Storage wrapper for Node.js 
 ---------------------------------------------
 
-os² is build for use against [OpenStack Object Storage API v1](https://developer.openstack.org/api-ref/object-storage/index.html)and uses the same concepts and hierarchy relations as exposed by this v1.
+os² is a wrapper for the [OpenStack Object Storage API v1](https://developer.openstack.org/api-ref/object-storage/index.html).
+Use it to communicate with an Object Storage via it's REST api without managing the HTTP requests.
 
-
+## Features
+  * Abstractions to write and read data from an Object Storage using Node.js streams. 
+  * Authentication to the OpenStack Object Storage using the [TempAuth](https://docs.openstack.org/swift/latest/overview_auth.html#temp-auth) method. (No production, contributions are welcome)
+  * Asynchronous communication using ES6 Promise
+  
 ## Quick reference
 1. [Store](#Store)
 2. [Account](#Account)
@@ -41,11 +46,12 @@ const os2 = require('os2');
 ```
 Or, to import os² components separately:
 ```javascript
+// pick only what you need, lol
 const { Store, Account, Container, Segment, DynamicLargeObject, StaticLargeObject } = require('os2');
 ```
 
 ## Store
-A Store instance represents the Object Storage REST service. It defined by a URL of where the service is hosted.
+A Store instance represents the Object Storage API service. It defined by a URL of where the service is hosted.
 
 ## Account
 ## Container
@@ -53,3 +59,12 @@ A Store instance represents the Object Storage REST service. It defined by a URL
 ## DLO
 ## SLO
 ## Error
+When an operation on the Object Storage API timeouts or the HTTP status code indicates an error, the Promise will `reject` a native javascript `Error` containing an error message.
+```javascript
+let account = new Account(example_store, username, password);
+account.connect().then(function() {
+  ...
+}, function (error) {
+console.error(error.toString());
+});
+```
