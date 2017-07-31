@@ -335,19 +335,60 @@ Accessors are `getPrefix` and `setPrefix`.
 * `container` 
 
 ## SLO
+A StaticLargeObject contains multiple segments, and is defined by a manifest.
 ### Methods
+#### new StaticLargeObject(container, name)
+Creates a new StaticLargeObject or SLO.
+* `container` \<[Container](#container)\> An instance of a container for the SLO
+* `name` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\> As the name or identifier of the SLO.
 
-## Types 
-os²
-\<[Integer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type)\>
-\<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\>
-\<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>
-\<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\>
-\<[stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)\>
-\<[stream.Writable](https://nodejs.org/api/stream.html#stream_class_stream_writable)\>
-\<[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)\>
-\<[Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)\>
-\<[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)\>
+#### createManifest(manifestContent)
+Creates or updates this SLO manifest
+* `manifestContent` A json \<[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)\>, where each element is an object representing a segment. These objects may contain the following attributes:
+  * `path` (required). The container and object name in the format: {container-name}/{object-name}
+  * `etag` (optional). If provided, this value must match the ETag of the segment object. This was included in the response headers when the segment was created. Generally, this will be the MD5 sum of the segment.
+  * `size_bytes` (optional). The size of the segment object. If provided, this value must match the Content-Length of that object.
+  * `range` (optional). The subset of the referenced object that should be used for segment data. This behaves similar to the Range header. If omitted, the entire object will be used.
+
+Returns a \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>.
+and `resolves` to true on success, `rejects` a native js \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> on failure
+
+#### createFromStreams(streams)
+Create a SLO from multiple data streams, where each stream is stored as a segment.
+The created SLO contains the concatenated content of the streams, ordered as received
+* `streams` \<[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)\> An array of streams to get the data from.
+
+Returns \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>.
+`Resolves` to a map of segments:status on success and `rejects` a js \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> otherwise.
+
+#### getContentStream([manifest])
+Get the SLO content or its manifest content.
+* `manifest` \<[Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)\>
+Set to true to get the manifest, false for the content. Defaults to `false`.
+
+Returns a \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>. It `resolves` to a \<[stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)\>
+on success. A javascript \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> is `rejected` on error.
+
+#### deleteWithContent()
+Delete the static large object and the segments it refers to.
+
+Returns a \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>.
+and `resolves` to true on success, `rejects` a native js \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> on failure
+
+### Inherited methods from `Segment`
+* `delete`
+* `copy`
+* `getMetadata`
+* `setMetadata`
+
+### Inherited methods from `DynamicLargeObject`
+* `createFromDisk`
+* `createFromStream`
+
+### Inherited properties from `Segment`
+* `name` 
+* `container` 
+
 ## Error
 When an operation on the Object Storage API timeouts or the HTTP status code indicates an error, the Promise will `reject` a native javascript `Error` containing an error message.
 ```javascript

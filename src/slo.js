@@ -10,7 +10,6 @@ const Segment = require('./segment.js');
  * @class StaticLargeObject
  * @param container {Container} Container the segment is stored into
  * @param name {String} Name of this segment
- * @param prefix {String} Prefix is a string that all segment objects have in common
  * @constructor
  */
 function StaticLargeObject(container, name) {
@@ -75,8 +74,8 @@ StaticLargeObject.prototype.createManifest = function(manifestContent = null) {
 
 /**
  * @fn createFromStreams
- * @desc Create a DLO from multiple data streams, where each stream is stored as a segment
- * The created DLO contains the concatenated content of the streams, ordered as received
+ * @desc Create a SLO from multiple data streams, where each stream is stored as a segment
+ * The created SLO contains the concatenated content of the streams, ordered as received
  * @param streams {Array} An array of streams to get the data from
  * @return {Promise} Resolves a map of segments:status on success or reject a js Error type
  */
@@ -116,7 +115,7 @@ StaticLargeObject.prototype.createFromStreams = function(streams) {
 
 /**
  * @fn getContentStream
- * @desc Get this DLO content or its manifest content.
+ * @desc Get this SLO content or its manifest content.
  * @param manifest {Boolean} Set to true to get the manifest, false for the content. defaults to false
  * @return {Promise} Resolve to a ReadableStream on success or reject a js Error
  */
