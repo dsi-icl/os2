@@ -1,6 +1,6 @@
 {
   "name": "os2",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "OpenStack object storage",
   "main": "./src/index.js",
   "scripts": {
