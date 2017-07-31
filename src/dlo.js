@@ -103,7 +103,7 @@ DynamicLargeObject.prototype.createFromDisk = function(path, chunkSize = fiveGig
                 resolve(ok);
             }, function(error) {
                 reject(error);
-            })
+            });
         });
     });
 };
@@ -124,7 +124,7 @@ DynamicLargeObject.prototype.createFromStreams = function(streams) {
         // Create one segment per read stream. Generates {prefix/uuidv4} names
         for (let stream_idx = 0; stream_idx < streams.length; stream_idx++) {
             let stream = streams[stream_idx];
-            let segment_name = ("000000000" + stream_idx).slice(-9) + '_' + uuidv4();
+            let segment_name = ('000000000' + stream_idx).slice(-9) + '_' + uuidv4();
             let segment = new Segment(_this._container, _this._prefix + '/' + segment_name);
             segments.push(segment);
             segmentsPromises.push(segment.createFromStream(stream));

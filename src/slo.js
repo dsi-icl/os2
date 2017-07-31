@@ -1,7 +1,6 @@
 const request = require('request');
 const MemoryStream = require('memorystream');
 const uuidv4 = require('uuid/v4');
-const fs = require('fs');
 
 const DynamicLargeObject = require('./dlo.js');
 const Segment = require('./segment.js');
@@ -68,7 +67,6 @@ StaticLargeObject.prototype.createManifest = function(manifestContent = null) {
             }
             resolve(true);
         });
-
     });
 };
 
@@ -88,7 +86,7 @@ StaticLargeObject.prototype.createFromStreams = function(streams) {
         // Create one segment per read stream. Generates {prefix/uuidv4} names
         for (let stream_idx = 0; stream_idx < streams.length; stream_idx++) {
             let stream = streams[stream_idx];
-            let segment_name = ("000000000" + stream_idx).slice(-9) + '_' + uuidv4();
+            let segment_name = ('000000000' + stream_idx).slice(-9) + '_' + uuidv4();
             let segment = new Segment(_this._container, segment_name);
             segments.push(segment);
             segmentsPromises.push(segment.createFromStream(stream));
