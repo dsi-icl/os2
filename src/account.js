@@ -115,7 +115,7 @@ Account.prototype.connect = function() {
 
 /**
  * @fn disconnect
- * @desc Disconnects this account form the store
+ * @desc Disconnects this account from the store
  * @return {Promise} Always resolves to true
  */
 Account.prototype.disconnect = async function() {

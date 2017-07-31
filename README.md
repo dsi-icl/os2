@@ -7,9 +7,9 @@ Use it to communicate with an Object Storage via it's REST api without managing 
 
 ## Features
   * Abstractions to write and read data from an Object Storage using Node.js streams. 
-  * Authentication to the OpenStack Object Storage using the[TempAuth](https://docs.openstack.org/swift/latest/overview_auth.html#temp-auth)method. (No production, contributions are welcome)
+  * Authentication to the OpenStack Object Storage using the [TempAuth](https://docs.openstack.org/swift/latest/overview_auth.html#temp-auth) method. (No production, contributions are welcome)
   * Asynchronous communication using ES6 Promise
-  * Support for[Large Objects](https://docs.openstack.org/swift/latest/api/large_objects.html)
+  * Support for [Large Objects](https://docs.openstack.org/swift/latest/api/large_objects.html)
 
 ## Getting started
 
@@ -144,7 +144,7 @@ Returns a \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Refer
 a native \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> on failure.
 
 #### disconnect()
-Disconnects this account form the store.
+Disconnects this account from the store.
 
 Returns \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\> that always resolves to true.
 
@@ -222,7 +222,69 @@ or `rejects` an \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScrip
 
 
 ## Segment
+### Methods
+#### new Segment(container, name)
+Create a new Object or Segment in the container. 
+ * `container` \<[Container](#container)\> An instance of a container for the Segment
+ * `name` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\> As the name or identifier for the Segment
+
+
+####  createFromDisk(filepath)
+Assign the segment's content from a file on disk, replaces its content if already exists.
+* `filepath` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\>  Absolute or relative path to the file on disk
+
+Returns a \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>. It `resolves` to true on success, on error it `rejects` a \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\>
+
+#### createFromStream(readStream)
+Assign the segment's content from stream, replaces its content if already exists
+* `readStream` Segment content in the form of a Node.js \<[stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)\>
+ instance
+ 
+Returns a \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>. It `resolves` to true on success, on error it `rejects` a \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\>
+
+#####  delete()
+Delete this object form the Object Storage.
+
+Returns a \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>. It `resolves` to true on success, on error it `rejects` a \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\>
+
+#####  copy
+Copies this object to the destination object.
+If the destination object is already created in the Object storage, it is replaced
+If the source segment is a Large Object, the manifest is copied, referencing the same content.
+* `object` \<[Segment](#segment)\> As a destination object
+
+Returns a \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>. It `resolves` to true on success, on error it `rejects` a \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\>
+
+
+#####  getContentStream()
+Get a stream readable on the segment content
+
+Returns a \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>. It `resolves` to a \<[stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)\>
+on success. A javascript \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> is `rejected` on error.
+
+#### setMetadata(metadata)
+Update metadata associated with the Segment. Omitted metadata items are unchanged, 
+metadata items with `null` or `undefined` values are removed.
+* `metadata` \<[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)\>
+each property is considered to be a metadata item.
+
+Returns \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>.
+and `resolves` to true on success, `rejects` a native js \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> on failure
+
+#### getMetadata()
+Retrieve the stored metadata with this segment.
+
+Returns \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>. Resolves to an object containing all the metadata on success, 
+reject an \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> otherwise
+
+### Properties
+* `name` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\> Identifier or name for the segment. `getName` and `setName` methods are provided.
+* `container` \<[Container](#container)\> An instance of a container the segment is stored into. `getContainer` and `setContainer`are available. 
+
 ## DLO
+
+### Methods 
+
 ## SLO
 ## Types 
 os²
