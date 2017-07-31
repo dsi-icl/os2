@@ -23,10 +23,10 @@ function Account(store = null, username = null, password = null, storage_url = n
     //Bind member functions
     this.connect = Account.prototype.connect.bind(this);
     this.disconnect = Account.prototype.disconnect.bind(this);
-    this.isConnected = Account.prototype.isConnected.bind(this);
     this.listContainers = Account.prototype.listContainers.bind(this);
     this.getMetadata = Account.prototype.getMetadata.bind(this);
     this.setMetadata = Account.prototype.setMetadata.bind(this);
+    this.isConnected = Account.prototype.isConnected.bind(this);
     this.getStore = Account.prototype.getStore.bind(this);
     this.setStore = Account.prototype.setStore.bind(this);
     this.getUsername = Account.prototype.getUsername.bind(this);
@@ -54,7 +54,7 @@ Account.fromUsernameAndPassword = function(storeUrl, username, password) {
 };
 
 /**
- * @fn fromStoreURL
+ * @fn fromNameAndToken
  * @desc Alternative constructor
  * @static
  * @param storeUrl {String} An OpenStack Object Storage URL
@@ -68,14 +68,6 @@ Account.fromNameAndToken = function(storeUrl, name, token) {
     account._isAuth = true;
     account._name = name;
     return account;
-};
-
-/**
- * @fn isConnected
- * @return {boolean} True if the account is connected
- */
-Account.prototype.isConnected = function() {
-    return this._isAuth;
 };
 
 /**
@@ -252,6 +244,14 @@ Account.prototype.setMetadata = function(metadata = {}) {
             resolve(true);
         });
     });
+};
+
+/**
+ * @fn isConnected
+ * @return {boolean} True if the account is connected
+ */
+Account.prototype.isConnected = function() {
+    return this._isAuth;
 };
 
 /**
