@@ -1,7 +1,7 @@
 {
   "name": "os2",
   "version": "0.0.1",
-  "description": "Open stack object storage",
+  "description": "OpenStack object storage",
   "main": "./src/index.js",
   "scripts": {
     "test": "jest --runInBand",
@@ -9,9 +9,12 @@
   },
   "keywords": [
     "openstack",
-    "swift",
+    "open",
+    "stack",
     "object",
-    "storage"
+    "storage",
+    "v1",
+    "swift"
   ],
   "author": "Jean Grizet <jean.grizet@gmail.com>",
   "license": "MIT",
