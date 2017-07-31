@@ -71,24 +71,14 @@ account.connect().then(function() {
 ```
 
 ## Quick reference
-1. [Store](#Store)
-2. [Account](#Account)
-3. [Container](#Contrainer)
-4. [Segment](#Segment)
+1. [Store](#store)
+2. [Account](#account)
+3. [Container](#contrainer)
+4. [Segment](#segment)
 5. [Dynamic Large Object](#DLO)
 6. [Static Large Object](#SLO)
-7. [Error handling](#Error)
+7. [Error handling](#error)
 
-## Types 
-os²
-\<[Integer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type)\>
-\<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\>
-\<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>
-\<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\>
-\<[stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)\>
-\<[stream.Writable](https://nodejs.org/api/stream.html#stream_class_stream_writable)\>
-\<[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)\>
-\<[Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)\>
 
 ## Store
 A Store instance represents the Object Storage API service. It is defined by a URL of where the service is hosted.
@@ -111,14 +101,15 @@ or `rejects` with a \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaS
    * `URL` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\>: The URL in use by this Store can be read using `getUrl` and updated with `setUrl`
 
 
+
 ## Account
 Your service provider creates your account and you own all resources in that account.
 The account defines a namespace for containers. In the OpenStack environment, account is synonymous with a project or tenant.
 
 #### Methods
 ##### new Account(store, [username, [password, [storage_url, [token]]]])
-Create a new \<[Account](#Account)\> instance, main constructor.
-* `store` \<[Store](#Store)\> os² Store instance where the account resides.
+Create a new \<[Account](#account)\> instance, main constructor.
+* `store` \<[Store](#store)\> os² Store instance where the account resides.
 * `username` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\> Username used authenticate. Defaults to `null`.
 * `password` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\> Password used authenticate. Defaults to `null`.
 * `storage_url` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\> URL pointing to this account storage API.
@@ -177,7 +168,7 @@ metadata items with `null` or `undefined` values are removed.
 each property is considered to be a metadata item.
 
 Returns \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>.
-Resolves to true on success, rejects with a native js \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> on failure
+`Resolves` to true on success, `rejects` a native js \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> on failure
 
 #### Properties
  * `connected` \<[Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)\> Account's connection status. `True` if a valid authentication has been performed. Access it with `isConnected`
@@ -189,9 +180,62 @@ Resolves to true on success, rejects with a native js \<[Error](https://develope
  * `name` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\> Name of the account in the store, exctracted from `strorageUrl` or passed at contruction. Read only: `getName`
 
 ## Container
+Defines a namespace for objects. An object with the same name in two different containers represents two different objects. There can be any number of containers within an account.
+#### Methods
+##### new Container(account, name)
+Creates a new Container instance. 
+* `account` \<[Account](#account)\> A valid instance of Account the new container will belong to.
+* `name` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\> Is the namespace representing the container on the object store.
+    
+##### create()
+Creates or updates the container instance in the object storage.
+
+Returns a \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\> which `resolves` to the object storage response on success, on error it `rejects` a native js Error.
+
+#####  delete()
+Delete the container instance in the object storage.
+
+Returns a \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\> which `resolves` to the object storage response on success, on error it `rejects` a native js Error.
+
+##### setMetadata(metadata)
+Update metadata associated with the container. Omitted metadata items are unchanged, 
+metadata items with `null` or `undefined` values are removed.
+* `metadata` \<[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)\>
+each property is considered to be a metadata item.
+
+Returns \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>.
+and `resolves` to true on success, `rejects` a native js \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> on failure
+
+##### getMetadata()
+Retrieve the stored metadata in this container.
+
+Returns \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>. Resolves to an object containing all the metadata on success, 
+reject an \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> otherwise
+
+##### listObjects()
+Get details and objects list from the container.
+Returns a \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\> which `resolves` to the json content of the container 
+or `rejects` an \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> instance.
+
+#### Properties
+ * `account` \<[Account](#Account)\> A valid Account instance where the container belongs. `getAccount` and `setAccount` are available.
+ * `name` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\> The container identifier. `getName` and `setName` are available.
+
+
 ## Segment
 ## DLO
 ## SLO
+## Types 
+os²
+\<[Integer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type)\>
+\<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\>
+\<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>
+\<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\>
+\<[stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)\>
+\<[stream.Writable](https://nodejs.org/api/stream.html#stream_class_stream_writable)\>
+\<[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)\>
+\<[Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)\>
+
 ## Error
 When an operation on the Object Storage API timeouts or the HTTP status code indicates an error, the Promise will `reject` a native javascript `Error` containing an error message.
 ```javascript
