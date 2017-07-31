@@ -70,9 +70,10 @@ DynamicLargeObject.prototype.createManifest = function() {
 
 /**
  * @fn createFromDisk
+ * @desc Create a dlo from a file on disk. The file gets split in segments if needed
  * @param path {String} Path of the file on the disk
  * @param chunkSize Optional maximum size of the generated segments
- * @return {Promise} Resolves a map of segments:status on success or reject a js Error type
+ * @return {Promise} Resolves to a map of segments:status on success or reject a js Error type
  */
 const fiveGigs = 1024 * 1024 * 1024 * 5;
 DynamicLargeObject.prototype.createFromDisk = function(path, chunkSize = fiveGigs) {

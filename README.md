@@ -222,9 +222,10 @@ or `rejects` an \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScrip
 
 
 ## Segment
+Stores data content, such as documents, images, and so on. You can also store custom metadata with an object.
 ### Methods
 #### new Segment(container, name)
-Create a new Object or Segment in the container. 
+Create a new Segment/Object in the container. 
  * `container` \<[Container](#container)\> An instance of a container for the Segment
  * `name` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\> As the name or identifier for the Segment
 
@@ -282,10 +283,60 @@ reject an \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 * `container` \<[Container](#container)\> An instance of a container the segment is stored into. `getContainer` and `setContainer`are available. 
 
 ## DLO
-
+A DynamicLargeObject contains multiple Segments. It is defined by a container: where the segment objects are stored; and a prefix: a string that all segment objects have in common.
 ### Methods 
+#### new DynamicLargeObject(container, name, [prefix]) {
+Create a new DynamicLargeObject or DLO. 
+ * `container` \<[Container](#container)\> An instance of a container for the DLO
+ * `name` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\> As the name or identifier of the DLO
+
+####  createManifest()
+Creates or updates this DLO manifest
+
+Returns \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>.
+and `resolves` to true on success, `rejects` a js \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> otherwise.
+
+####  createFromDisk(filePath[, chunkSize])
+Create a dlo from a file on disk. The file gets split in segments if needed.
+* `path` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\> Path of the source file on the disk.
+* `chunkSize` Optional maximum size of the generated segments. Default to 5Go.
+
+Returns \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>.
+`Resolves` to a map of segments:status on success and `rejects` a js \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> otherwise.
+
+####  createFromStreams(streams)
+Create a DLO from multiple data streams, where each stream is stored as a segment.
+The created DLO contains the concatenated content of the streams, ordered as received
+* `streams` \<[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)\> An array of streams to get the data from.
+
+Returns \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>.
+`Resolves` to a map of segments:status on success and `rejects` a js \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> otherwise.
+ 
+####  getContentStream([manifest])
+Get the DLO content or its manifest content.
+* `manifest` \<[Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)\>
+Set to true to get the manifest, false for the content. Defaults to `false`.
+
+Returns a \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>. It `resolves` to a \<[stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)\>
+on success. A javascript \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> is `rejected` on error.
+
+### Inherited methods from `Segment`
+* `delete`
+* `copy`
+* `getMetadata`
+* `setMetadata`
+
+### Properties
+* `prefix` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\> A DLO has a prefix to identify which segments are part of the DLO.
+Accessors are `getPrefix` and `setPrefix`.
+
+### Inherited properties from `Segment`
+* `name` 
+* `container` 
 
 ## SLO
+### Methods
+
 ## Types 
 os²
 \<[Integer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type)\>
@@ -296,7 +347,7 @@ os²
 \<[stream.Writable](https://nodejs.org/api/stream.html#stream_class_stream_writable)\>
 \<[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)\>
 \<[Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)\>
-
+\<[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)\>
 ## Error
 When an operation on the Object Storage API timeouts or the HTTP status code indicates an error, the Promise will `reject` a native javascript `Error` containing an error message.
 ```javascript
