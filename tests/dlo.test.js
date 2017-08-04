@@ -133,7 +133,6 @@ test('DLO create from single stream, default chunk size', function(done) {
 });
 
 
-/*
 afterAll(function() {
     let delete_proms = [];
     let obj = new DynamicLargeObject(dlo_container, testConfig.dlo_object_name, testConfig.dlo_prefix);
@@ -152,4 +151,3 @@ afterAll(function() {
         throw error.toString();
     });
 });
-// */
