@@ -1,6 +1,6 @@
 {
   "name": "os2",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Swift OpenStack Object Storage wrapper for Node.js, with large objects support",
   "main": "./src/index.js",
   "scripts": {
@@ -8,10 +8,14 @@
     "lint": "eslint src"
   },
   "keywords": [
-    "openstack", "open",
-    "stack", "object",
-    "storage", "large",
-    "v1", "swift",
+    "openstack",
+    "open",
+    "stack",
+    "object",
+    "storage",
+    "large",
+    "v1",
+    "swift",
     "tezirg"
   ],
   "author": "Jean Grizet <jean.grizet@gmail.com>",
