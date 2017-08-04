@@ -111,7 +111,7 @@ test('DLO remove manifest and chunks', function(done) {
     });
 });
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 60 * 1000 * 10; // 60 secs * 10 =  10 minutes
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 60 * 1000 * 5; // 60 secs * 5 =  5 minutes
 test('DLO create from single stream, default chunk size', function(done) {
     expect.assertions(3);
     expect(dlo_account.isConnected()).toBeTruthy();
@@ -132,8 +132,12 @@ test('DLO create from single stream, default chunk size', function(done) {
     test_stream.end(buffer); // 6Go
 });
 
+
+/*
 afterAll(function() {
     let delete_proms = [];
+    let obj = new DynamicLargeObject(dlo_container, testConfig.dlo_object_name, testConfig.dlo_prefix);
+    delete_proms.push(obj.delete());
     Object.keys(chunks).forEach(function(c) {
         let seg = new Segment(dlo_container, c);
         delete_proms.push(seg.delete());
@@ -148,3 +152,4 @@ afterAll(function() {
         throw error.toString();
     });
 });
+// */

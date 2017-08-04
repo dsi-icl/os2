@@ -296,6 +296,15 @@ Creates or updates this DLO manifest
 Returns \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>.
 and `resolves` to true on success, `rejects` a js \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> otherwise.
 
+### createFromStream
+Creates a SLO from a single stream.
+* `stream` \<[stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)\> A readable stream providing the content
+* `chunkSize` <Integer> Optional maximum size of the generated segments. Default and max to 1Go
+
+Returns \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>.
+`Resolves` to a map of segments:status on success and `rejects` a js \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> otherwise.
+
+
 ####  createFromDisk(filePath[, chunkSize])
 Create a dlo from a file on disk. The file gets split in segments if needed.
 * `path` \<[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)\> Path of the source file on the disk.
@@ -353,6 +362,14 @@ Creates or updates this SLO manifest
 Returns a \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>.
 and `resolves` to true on success, `rejects` a native js \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> on failure
 
+### createFromStream
+Creates a SLO from a single stream.
+* `stream` \<[stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)\> A readable stream providing the content
+* `chunkSize` <Integer> Optional maximum size of the generated segments. Default and max to 1Go
+
+Returns \<[Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)\>.
+`Resolves` to a map of segments:status on success and `rejects` a js \<[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)\> otherwise.
+ 
 #### createFromStreams(streams)
 Create a SLO from multiple data streams, where each stream is stored as a segment.
 The created SLO contains the concatenated content of the streams, ordered as received
