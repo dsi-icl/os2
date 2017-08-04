@@ -129,7 +129,6 @@ StaticLargeObject.prototype.createFromStream = function(stream, chunkSize = maxC
     if (chunkSize > maxChunkSize) //Max to maxChunkSize
         chunkSize = maxChunkSize;
     return new Promise(function(resolve, reject) {
-        let control_stream = new MemoryStream();
         let stream_process = {
             streams: [],
             stream_idx: 0,
@@ -150,11 +149,9 @@ StaticLargeObject.prototype.createFromStream = function(stream, chunkSize = maxC
             manifest.push({
                 path: _this._container.getName() + '/' + segment.getName()
             });
-            control_stream.pipe(new_stream, {end : false}); // Will end manually later
             stream_process.segmentsPromises.push(segment.createFromStream(new_stream)); //Start reading from new stream
         };
         let unpipeOldStream = function() {
-            control_stream.unpipe(stream_process.streams[stream_process.stream_idx]); // Stop writing on current stream
             stream_process.streams[stream_process.stream_idx].end(); //Manually end current stream
         };
 
@@ -170,18 +167,18 @@ StaticLargeObject.prototype.createFromStream = function(stream, chunkSize = maxC
                     let overflowedChunk = chunk.slice(chunkSize - stream_process.stream_ptr);
                     let flowingChunk = chunk.slice(0, - overflowedChunk.length);
 
-                    control_stream.write(flowingChunk); //Write until chunkSize in current segment
+                    stream_process.streams[stream_process.stream_idx].write(flowingChunk); //Write until chunkSize in current segment
                     stream_process.stream_ptr += flowingChunk.length; //Increment current stream pointer
-                    dbg.push({ type : 'overflow', recvSize: chunk.length, flowingSize: flowingChunk.length, overFlowSize: overflowedChunk.length, streamIndex: stream_process.stream_idx, stream_ptr: stream_process.stream_ptr});
+                    //dbg.push({ type : 'overflow', recvSize: chunk.length, flowingSize: flowingChunk.length, overFlowSize: overflowedChunk.length, streamIndex: stream_process.stream_idx, stream_ptr: stream_process.stream_ptr});
                     unpipeOldStream();
                     pipeNewStream();
 
                     stream.unshift(overflowedChunk); // un-consume the stream
 
             } else { // Less than chunkSize
-                control_stream.write(chunk);
+                stream_process.streams[stream_process.stream_idx].write(chunk);
                 stream_process.stream_ptr += chunk.length; // Increment current stream pointer
-                dbg.push({ type : 'less', recvSize: chunk.length, flowingSize: chunk.length, overFlowSize: 0,  streamIndex: stream_process.stream_idx, stream_ptr: stream_process.stream_ptr});
+                //dbg.push({ type : 'less', recvSize: chunk.length, flowingSize: chunk.length, overFlowSize: 0,  streamIndex: stream_process.stream_idx, stream_ptr: stream_process.stream_ptr});
             }
             stream.resume(); // Return to normal consume mode
         });
