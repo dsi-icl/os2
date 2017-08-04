@@ -38,7 +38,7 @@ DynamicLargeObject.prototype.constructor = DynamicLargeObject;
 
 //Default chunk size used across the file
 //const maxChunkSize = 5368709120;
-const maxChunkSize = buffer.kMaxLength - 1;
+const maxChunkSize = 1024 * 1024 * 1024 - 1;
 
 /**
  * @fn _generateSegmentName

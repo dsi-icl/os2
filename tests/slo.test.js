@@ -94,7 +94,7 @@ test('SLO create from large stream, 500Mo chunks', function(done) {
     test_stream.write(buffer); // 2Go
     test_stream.end('Bye bye 2Go +');
 });
-/*
+
 test('SLO remove manifest and remove chunks again', function(done) {
     expect.assertions(3);
     expect(slo_account.isConnected()).toBeTruthy();
@@ -107,7 +107,7 @@ test('SLO remove manifest and remove chunks again', function(done) {
         done.fail(error.toString());
     });
 });
-*/
+
 afterAll(function() {
     return slo_container.delete().then(function(ok) {
         return slo_account.disconnect();
