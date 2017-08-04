@@ -136,7 +136,7 @@ StaticLargeObject.prototype.createFromStream = function(stream, chunkSize = maxC
             segments: [],
             segmentsPromises: []
         };
-        let dbg = [];
+        //let dbg = [];
         let manifest = [];
 
         let pipeNewStream = function() {
@@ -214,7 +214,7 @@ StaticLargeObject.prototype.createFromStream = function(stream, chunkSize = maxC
                 stream_process.segments.forEach(function (s, idx) {
                     result[s.getName()] = ok_array[idx];
                 });
-                reject(JSON.stringify(dbg, null, 2));
+                //reject(JSON.stringify(dbg, null, 2));
                 _this.createManifest(manifest).then(function (__unused__ok) {
                     resolve(result);
                 }, function (error) {

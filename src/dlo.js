@@ -181,29 +181,25 @@ DynamicLargeObject.prototype.createFromStream = function(stream, chunkSize = max
     if (chunkSize > maxChunkSize) //Max to maxChunkSize
         chunkSize = maxChunkSize;
     return new Promise(function(resolve, reject) {
-        let control_stream = new MemoryStream();
         let stream_process = {
             streams: [],
             stream_idx: 0,
-            stream_ptr: 0,
+            stream_ptr: [],
             segments: [],
             segmentsPromises: []
         };
 
         let pipeNewStream = function() {
             let new_stream = new MemoryStream();
-            control_stream.pipe(new_stream, {end : false}); // Will end manually later
             stream_process.streams.push(new_stream); //Insert current stream
-            stream_process.stream_idx = stream_process.streams.length - 1; //Last index in the array
             stream_process.stream_ptr = 0; //Current segment has size 0
+            stream_process.stream_idx = stream_process.streams.length - 1; //Last index in the array
             let segment = new Segment(_this._container, _this._generateSegmentName(stream_process.stream_idx)); //Create segment object
             stream_process.segments.push(segment);
-            stream_process.segmentsPromises.push(segment.createFromStream(new_stream));
+            stream_process.segmentsPromises.push(segment.createFromStream(new_stream)); //Start reading from new stream
         };
         let unpipeOldStream = function() {
-            control_stream.unpipe(); // Stop writing on current stream
             stream_process.streams[stream_process.stream_idx].end(); //Manually end current stream
-
         };
 
         //Start processing control stream
@@ -213,26 +209,23 @@ DynamicLargeObject.prototype.createFromStream = function(stream, chunkSize = max
             if (Buffer.isBuffer(chunk) === false) // Forces chunk to be a Buffer object
                 chunk = Buffer.from(chunk);
 
-            stream_process.stream_ptr += chunk.length;
-            if (stream_process.stream_ptr >= chunkSize) { // chunkSize limit reached
+            stream.pause(); //Stop stream because we may stop consuming data for a moment
+            if (stream_process.stream_ptr + chunk.length >= chunkSize) { // chunkSize limit reached
+                let overflowedChunk = chunk.slice(chunkSize - stream_process.stream_ptr);
+                let flowingChunk = chunk.slice(0, - overflowedChunk.length);
 
-                if (stream_process.stream_ptr > chunkSize) { // there is overflowing data
-                    stream.pause(); //Stop stream because we will un-consume it
-
-                    let overflowedChunk = chunk.slice(chunkSize - stream_process.stream_ptr);
-                    let flowingChunk = chunk.slice(0, - overflowedChunk.length);
-
-                    control_stream.write(flowingChunk); //Write until chunkSize in current segment
-                    stream.unshift(overflowedChunk); // un-consume the stream
-                    stream.resume(); // Return to normal
-                } else { //Exact chunk size
-                    control_stream.write(chunk);
-                }
+                stream_process.streams[stream_process.stream_idx].write(flowingChunk); //Write until chunkSize in current segment
+                stream_process.stream_ptr += flowingChunk.length; //Increment current stream pointer
                 unpipeOldStream();
                 pipeNewStream();
+
+                stream.unshift(overflowedChunk); // un-consume the stream
+
             } else { // Less than chunkSize
-                control_stream.write(chunk);
+                stream_process.streams[stream_process.stream_idx].write(chunk);
+                stream_process.stream_ptr += chunk.length; // Increment current stream pointer
             }
+            stream.resume(); // Return to normal consume mode
         });
 
         stream.on('end', function() {
@@ -245,6 +238,7 @@ DynamicLargeObject.prototype.createFromStream = function(stream, chunkSize = max
                     creation_promise.then(function(__unused___create_ok) {
                         segment.delete().then(function(delete_ok) {
                             stream_process.segments.pop();
+                            manifest.pop();
                             resolve(delete_ok);
 
                         }, function(error) {
