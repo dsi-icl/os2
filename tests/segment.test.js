@@ -127,6 +127,33 @@ test('Segment delete', function(done) {
     });
 });
 
+test('Segment create from stream', function(done) {
+    expect.assertions(3);
+    expect(segment_account.isConnected()).toBeTruthy();
+    expect(segment_container).toBeDefined();
+    let obj = new Segment(segment_container, testConfig.segment_object_name);
+    let stream = new MemoryStream('');
+    obj.createFromStream(stream).then(function(ok) {
+        expect(ok).toBeTruthy();
+        done();
+    }, function(error) {
+        done.fail(error.toString());
+    });
+    stream.end();
+});
+
+test('Segment empty delete', function(done) {
+    expect.assertions(3);
+    expect(segment_account.isConnected()).toBeTruthy();
+    expect(segment_container).toBeDefined();
+    let obj = new Segment(segment_container, testConfig.segment_object_name);
+    obj.delete().then(function(ok) {
+        expect(ok).toBeTruthy();
+        done();
+    }, function(error) {
+        done.fail(error.toString());
+    });
+});
 
 afterAll(function() {
     return segment_container.delete().then(function(ok) {

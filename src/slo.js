@@ -1,7 +1,7 @@
 const request = require('request');
 const MemoryStream = require('memorystream');
 const uuidv4 = require('uuid/v4');
-
+const buffer = require('buffer');
 const DynamicLargeObject = require('./dlo.js');
 const Segment = require('./segment.js');
 
@@ -17,6 +17,7 @@ function StaticLargeObject(container, name) {
 
     //Bind member functions and overloads
     this.createManifest = StaticLargeObject.prototype.createManifest.bind(this);
+    this.createFromStream = StaticLargeObject.prototype.createFromStream.bind(this);
     this.createFromStreams = StaticLargeObject.prototype.createFromStreams.bind(this);
     this.getContentStream = StaticLargeObject.prototype.getContentStream.bind(this);
     this.deleteWithContent = StaticLargeObject.prototype.deleteWithContent.bind(this);
@@ -24,6 +25,10 @@ function StaticLargeObject(container, name) {
 
 StaticLargeObject.prototype = Object.create(DynamicLargeObject.prototype); //Inherit js Style
 StaticLargeObject.prototype.constructor = DynamicLargeObject;
+
+//Default chunk size used across the file
+//const maxChunkSize = 5368709120;
+const maxChunkSize = 1024 * 1024 * 1024 - 1;
 
 /**
  * @fn createManifest
@@ -86,7 +91,7 @@ StaticLargeObject.prototype.createFromStreams = function(streams) {
         // Create one segment per read stream. Generates {prefix/uuidv4} names
         for (let stream_idx = 0; stream_idx < streams.length; stream_idx++) {
             let stream = streams[stream_idx];
-            let segment_name = ('000000000' + stream_idx).slice(-9) + '_' + uuidv4();
+            let segment_name =  _this._generateSegmentName(stream_idx);
             let segment = new Segment(_this._container, segment_name);
             segments.push(segment);
             segmentsPromises.push(segment.createFromStream(stream));
@@ -106,6 +111,128 @@ StaticLargeObject.prototype.createFromStreams = function(streams) {
                 reject(error);
             });
         }, function(error) {
+            reject(error);
+        });
+    });
+};
+
+/**
+ * @fn createFromStream
+ * @desc Overload Segment interface to create a a SLO from a single stream.
+ * @see createFromStreams
+ * @param stream {Readable} A stream to retrieve the content
+ * @param chunkSize {Integer} Optional maximum size of the generated segments. Default and max to 1Go
+ * @return {Promise} Resolves to a map of segments:status on success or reject a js Error type
+ */
+StaticLargeObject.prototype.createFromStream = function(stream, chunkSize = maxChunkSize) {
+    let _this = this;
+    if (chunkSize > maxChunkSize) //Max to maxChunkSize
+        chunkSize = maxChunkSize;
+    return new Promise(function(resolve, reject) {
+        let control_stream = new MemoryStream();
+        let stream_process = {
+            streams: [],
+            stream_idx: 0,
+            stream_ptr: [],
+            segments: [],
+            segmentsPromises: []
+        };
+        let dbg = [];
+        let manifest = [];
+
+        let pipeNewStream = function() {
+            let new_stream = new MemoryStream();
+            stream_process.streams.push(new_stream); //Insert current stream
+            stream_process.stream_ptr = 0; //Current segment has size 0
+            stream_process.stream_idx = stream_process.streams.length - 1; //Last index in the array
+            let segment = new Segment(_this._container, _this._generateSegmentName(stream_process.stream_idx)); //Create segment object
+            stream_process.segments.push(segment);
+            manifest.push({
+                path: _this._container.getName() + '/' + segment.getName()
+            });
+            control_stream.pipe(new_stream, {end : false}); // Will end manually later
+            stream_process.segmentsPromises.push(segment.createFromStream(new_stream)); //Start reading from new stream
+        };
+        let unpipeOldStream = function() {
+            control_stream.unpipe(stream_process.streams[stream_process.stream_idx]); // Stop writing on current stream
+            stream_process.streams[stream_process.stream_idx].end(); //Manually end current stream
+        };
+
+        //Start processing control stream
+        pipeNewStream();
+
+        stream.on('data', function(chunk) {
+            if (Buffer.isBuffer(chunk) === false) // Forces chunk to be a Buffer object
+                chunk = Buffer.from(chunk);
+
+
+            stream_process.stream_ptr += chunk.length;
+            if (stream_process.stream_ptr >= chunkSize) { // chunkSize limit reached
+                if (stream_process.stream_ptr > chunkSize) { // there is overflowing data
+
+                    let overflowedChunk = chunk.slice(chunkSize - (stream_process.stream_ptr % chunkSize));
+                    let flowingChunk = chunk.slice(0, - overflowedChunk.length);
+
+                    stream.pause(); //Stop stream because we will stop consuming data for a moment
+                    stream.unshift(overflowedChunk); // un-consume the stream
+                    stream.resume(); // Return to normal consume mode
+                    control_stream.write(flowingChunk); //Write until chunkSize in current segment
+                    dbg.push({ type : 'overflow', chunkSize: flowingChunk.length, overFlowSize: overflowedChunk.length, streamIndex: stream_process.stream_idx, stream_ptr: stream_process.stream_ptr});
+                } else { //Exact chunk size
+                    control_stream.write(chunk);
+                    dbg.push({ type : 'exact', chunkSize: chunk.length, overFlowSize: 0, streamIndex: stream_process.stream_idx, stream_ptr: stream_process.stream_ptr});
+                }
+                unpipeOldStream();
+                pipeNewStream();
+            } else { // Less than chunkSize
+                control_stream.write(chunk);
+                dbg.push({ type : 'less', chunkSize: chunk.length, overFlowSize: 0, streamIndex: stream_process.stream_idx, stream_ptr: stream_process.stream_ptr});
+            }
+        });
+
+        stream.on('end', function() {
+            unpipeOldStream();
+            stream.unpipe();
+            if (stream_process.stream_ptr === 0) { // The last Segment is empty, remove it
+                let segment = stream_process.segments[stream_process.stream_idx];
+                let creation_promise = stream_process.segmentsPromises[stream_process.segmentsPromises.length - 1];
+                let deletion_promise = new Promise(function(resolve, reject) {
+                    creation_promise.then(function(__unused___create_ok) {
+                        segment.delete().then(function(delete_ok) {
+                            stream_process.segments.pop();
+                            manifest.pop();
+                            resolve(delete_ok);
+
+                        }, function(error) {
+                            reject(error);
+                        });
+                    }, function(error) {
+                        reject(error);
+                    });
+                });
+                stream_process.segmentsPromises.push(deletion_promise);
+            }
+
+            //reject(JSON.stringify(manifest));
+
+            //Async wait for all segments
+            Promise.all(stream_process.segmentsPromises).then(function (ok_array) {
+                let result = {};
+                stream_process.segments.forEach(function (s, idx) {
+                    result[s.getName()] = ok_array[idx];
+                });
+                reject(JSON.stringify(dbg, null, 2));
+                _this.createManifest(manifest).then(function (__unused__ok) {
+                    resolve(result);
+                }, function (error) {
+                    reject(error);
+                });
+            }, function (error) {
+                reject(error);
+            });
+        });
+
+        stream.on('error', function(error) {
             reject(error);
         });
     });
