@@ -102,6 +102,7 @@ test('DLO remove manifest and chunks', function(done) {
         });
         Promise.all(delete_proms).then(function(ok_array) {
             expect(ok_array).toBeDefined();
+            chunks = {};
             done();
         }, function(error){
             done.fail(error.toString());
@@ -132,22 +133,34 @@ test('DLO create from single stream, default chunk size', function(done) {
     test_stream.end(buffer); // 6Go
 });
 
+test('DLO remove manifest and chunks', function(done) {
+    expect.assertions(4);
+    expect(dlo_account.isConnected()).toBeTruthy();
+    expect(dlo_container).toBeDefined();
+    let obj = new DynamicLargeObject(dlo_container, testConfig.dlo_object_name, testConfig.dlo_prefix);
+    obj.delete().then(function (status) {
+        expect(status).toBeTruthy();
+        let delete_proms = [];
+        Object.keys(chunks).forEach(function(c) {
+            let seg = new Segment(dlo_container, c);
+            delete_proms.push(seg.delete());
+        });
+        Promise.all(delete_proms).then(function(ok_array) {
+            expect(ok_array).toBeDefined();
+            done();
+        }, function(error){
+            done.fail(error.toString());
+        });
+    }, function (error) {
+        done.fail(error.toString());
+    });
+});
 
 afterAll(function() {
-    let delete_proms = [];
-    let obj = new DynamicLargeObject(dlo_container, testConfig.dlo_object_name, testConfig.dlo_prefix);
-    delete_proms.push(obj.delete());
-    Object.keys(chunks).forEach(function(c) {
-        let seg = new Segment(dlo_container, c);
-        delete_proms.push(seg.delete());
-    });
-    return Promise.all(delete_proms).then(function(ok_array) {
-        return dlo_container.delete().then(function(ok) {
-            return dlo_account.disconnect();
-        }, function(error) {
-            throw error.toString();
-        });
+    return dlo_container.delete().then(function(__unused__ok) {
+        return dlo_account.disconnect();
     }, function(error) {
         throw error.toString();
     });
+
 });

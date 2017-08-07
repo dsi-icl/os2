@@ -2,7 +2,6 @@ const request = require('request');
 const MemoryStream = require('memorystream');
 const uuidv4 = require('uuid/v4');
 const fs = require('fs');
-const buffer = require('buffer');
 
 const Segment = require('./segment.js');
 
@@ -212,7 +211,7 @@ DynamicLargeObject.prototype.createFromStream = function(stream, chunkSize = max
             stream.pause(); //Stop stream because we may stop consuming data for a moment
             if (stream_process.stream_ptr + chunk.length >= chunkSize) { // chunkSize limit reached
                 let overflowedChunk = chunk.slice(chunkSize - stream_process.stream_ptr);
-                let flowingChunk = chunk.slice(0, - overflowedChunk.length);
+                let flowingChunk = chunk.slice(0, -overflowedChunk.length);
 
                 stream_process.streams[stream_process.stream_idx].write(flowingChunk); //Write until chunkSize in current segment
                 stream_process.stream_ptr += flowingChunk.length; //Increment current stream pointer
@@ -238,9 +237,7 @@ DynamicLargeObject.prototype.createFromStream = function(stream, chunkSize = max
                     creation_promise.then(function(__unused___create_ok) {
                         segment.delete().then(function(delete_ok) {
                             stream_process.segments.pop();
-                            manifest.pop();
                             resolve(delete_ok);
-
                         }, function(error) {
                             reject(error);
                         });

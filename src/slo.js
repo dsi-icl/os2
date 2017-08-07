@@ -1,7 +1,5 @@
 const request = require('request');
 const MemoryStream = require('memorystream');
-const uuidv4 = require('uuid/v4');
-const buffer = require('buffer');
 const DynamicLargeObject = require('./dlo.js');
 const Segment = require('./segment.js');
 
@@ -165,11 +163,11 @@ StaticLargeObject.prototype.createFromStream = function(stream, chunkSize = maxC
             stream.pause(); //Stop stream because we may stop consuming data for a moment
             if (stream_process.stream_ptr + chunk.length >= chunkSize) { // chunkSize limit reached
                     let overflowedChunk = chunk.slice(chunkSize - stream_process.stream_ptr);
-                    let flowingChunk = chunk.slice(0, - overflowedChunk.length);
+                    let flowingChunk = chunk.slice(0, -overflowedChunk.length);
 
                     stream_process.streams[stream_process.stream_idx].write(flowingChunk); //Write until chunkSize in current segment
                     stream_process.stream_ptr += flowingChunk.length; //Increment current stream pointer
-                    //dbg.push({ type : 'overflow', recvSize: chunk.length, flowingSize: flowingChunk.length, overFlowSize: overflowedChunk.length, streamIndex: stream_process.stream_idx, stream_ptr: stream_process.stream_ptr});
+                    // dbg.push({ type : 'overflow', recvSize: chunk.length, flowingSize: flowingChunk.length, overFlowSize: overflowedChunk.length, streamIndex: stream_process.stream_idx, stream_ptr: stream_process.stream_ptr});
                     unpipeOldStream();
                     pipeNewStream();
 
@@ -178,7 +176,7 @@ StaticLargeObject.prototype.createFromStream = function(stream, chunkSize = maxC
             } else { // Less than chunkSize
                 stream_process.streams[stream_process.stream_idx].write(chunk);
                 stream_process.stream_ptr += chunk.length; // Increment current stream pointer
-                //dbg.push({ type : 'less', recvSize: chunk.length, flowingSize: chunk.length, overFlowSize: 0,  streamIndex: stream_process.stream_idx, stream_ptr: stream_process.stream_ptr});
+                // dbg.push({ type : 'less', recvSize: chunk.length, flowingSize: chunk.length, overFlowSize: 0,  streamIndex: stream_process.stream_idx, stream_ptr: stream_process.stream_ptr});
             }
             stream.resume(); // Return to normal consume mode
         });
@@ -206,15 +204,14 @@ StaticLargeObject.prototype.createFromStream = function(stream, chunkSize = maxC
                 stream_process.segmentsPromises.push(deletion_promise);
             }
 
-            //reject(JSON.stringify(manifest));
 
-            //Async wait for all segments
+            // Async wait for all segments
             Promise.all(stream_process.segmentsPromises).then(function (ok_array) {
                 let result = {};
                 stream_process.segments.forEach(function (s, idx) {
                     result[s.getName()] = ok_array[idx];
                 });
-                //reject(JSON.stringify(dbg, null, 2));
+                // reject(JSON.stringify(dbg, null, 2));
                 _this.createManifest(manifest).then(function (__unused__ok) {
                     resolve(result);
                 }, function (error) {
