@@ -269,7 +269,7 @@ Account.prototype.getStore = function() {
  * @param store {Store} New store member value
  * @return {Store} Assigned store member value
  */
-Account.prototype.setStore = async function(store) {
+Account.prototype.setStore = async function setStore(store) {
     await this.disconnect();
     this._store = store;
     return this._store;
@@ -290,7 +290,7 @@ Account.prototype.getUsername = function() {
  * @param username {String} The new value for username member
  * @return {String} The new value assigned to username
  */
-Account.prototype.setUsername = async function(username) {
+Account.prototype.setUsername = async function setUsername(username) {
     await this.disconnect();
     this._username = username;
     return username;
@@ -311,7 +311,7 @@ Account.prototype.getPassword = function() {
  * @param pass {String} The new value for password member
  * @return {String} The new value assigned to password
  */
-Account.prototype.setPassword = async function(pass) {
+Account.prototype.setPassword = async function setPassword(pass) {
     await this.disconnect();
     this._password = pass;
     return this._password;
