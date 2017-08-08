@@ -269,9 +269,11 @@ Account.prototype.getStore = function() {
  * @return {Store} Assigned store member value
  */
 Account.prototype.setStore = function setStore(store) {
-    this.disconnect();
-    this._store = store;
-    return this._store;
+    let _this = this;
+    this.disconnect().then(function() {
+        _this._store = store;
+    });
+    return store;
 };
 
 /**
@@ -290,8 +292,10 @@ Account.prototype.getUsername = function() {
  * @return {String} The new value assigned to username
  */
 Account.prototype.setUsername = function (username) {
-    this.disconnect();
-    this._username = username;
+    let _this = this;
+    this.disconnect().then(function() {
+        _this._username = username;
+    });
     return username;
 };
 
@@ -311,9 +315,11 @@ Account.prototype.getPassword = function() {
  * @return {String} The new value assigned to password
  */
 Account.prototype.setPassword = function setPassword(pass) {
-    this.disconnect();
-    this._password = pass;
-    return this._password;
+    let _this = this;
+    this.disconnect().then(function() {
+        _this._password = pass;
+    });
+    return pass;
 };
 
 /**
