@@ -118,7 +118,7 @@ Account.prototype.connect = function() {
  * @desc Disconnects this account from the store
  * @return {Promise} Always resolves to true
  */
-Account.prototype.disconnect = async function() {
+Account.prototype.disconnect = function() {
     let _this = this;
     return new Promise(function(resolve, __unused__reject) {
         _this._isAuth = false;
