@@ -5,7 +5,6 @@
 version: 2
 jobs:
  build:
-   machine: true
    steps:
     - run:
         name: Install Docker Compose
