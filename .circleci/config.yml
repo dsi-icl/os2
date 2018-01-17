@@ -5,6 +5,7 @@
 version: 2
 jobs:
   build:
+    machine: true
     steps:
       - run:
          name: Install Docker Compose
@@ -16,7 +17,7 @@ jobs:
       - setup_remote_docker
 	
       - run:
-          name: Start container and verify it's working
+          name: Build & Run docker tests
           command: |
             docker-compose -f ./test/docker-compose.yml build swift
             docker-compose -f ./test/docker-compose.yml build tests

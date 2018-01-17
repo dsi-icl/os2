@@ -7,7 +7,9 @@ services:
             - 8080:8080
 
     tests:
-        image: circleci/node:7.10
+        build:
+            context: ../
+            dockerfile: ./test/Dockerfile
         depends_on:
             - swift
         links:
