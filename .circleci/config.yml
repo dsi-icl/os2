@@ -22,6 +22,6 @@ jobs:
             docker-compose -f ./test/docker-compose.yml build swift
             docker-compose -f ./test/docker-compose.yml build tests
             docker-compose -f ./test/docker-compose.yml up tests
-            docker-compose -f ./test/docker-compose.yml run tests yarn install
-            docker-compose -f ./test/docker-compose.yml run tests yarn test
+            docker-compose -f ./test/docker-compose.yml run tests install
+            docker-compose -f ./test/docker-compose.yml run tests npm test
 
