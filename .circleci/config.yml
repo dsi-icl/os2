@@ -14,6 +14,9 @@ jobs:
     docker:
       - image: bouncestorage/swift-aio
       - run: docker run -P -v /tmp/test_data_store:/swift/nodes -t bouncestorage/swift-aio
+      - run: curl -v -H 'X-Storage-User: test:tester' -H 'X-Storage-Pass: testing' http://127.0.0.1:8080/auth/v1.0
+      - run: curl -v -H 'X-Auth-Token: <token-from-x-auth-token-above>' <url-from-x-storage-url-above>
+      - run: swift -A http://127.0.0.1:8080/auth/v1.0 -U test:tester -K testing stat
     docker:
       - image: circleci/node:8.9.4
     steps:
