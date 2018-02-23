@@ -8,7 +8,7 @@ general:
   branches:
     ignore:
       - gh-pages
-	
+
 jobs:
  test:
   docker:
@@ -18,24 +18,11 @@ jobs:
       - run: npm install
 	  - run: npm test
  build:
-   steps:
-    - run:
-        name: Install Docker Compose
-        command: |
-          curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-          chmod +x ~/docker-compose
-          sudo mv ~/docker-compose /usr/local/bin/docker-compose
-  
-    - setup_remote_docker
- 
-    - run:
-       name: Build & Run docker tests
-       command: |
-         docker-compose -f ./test/docker-compose.yml build swift
-         docker-compose -f ./test/docker-compose.yml build tests
-         docker-compose -f ./test/docker-compose.yml up tests
-         docker-compose -f ./test/docker-compose.yml run tests install
-         docker-compose -f ./test/docker-compose.yml run tests npm test
+	 - image: circleci/node:8.9.4
+	 steps:
+      - checkout
+      - run: echo "coucou hibou"
+   
 		 
 workflows:
   version: 2
