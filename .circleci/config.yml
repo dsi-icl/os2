@@ -10,10 +10,10 @@ general:
       - gh-pages
 
 jobs:
- test:
   docker:
   - image: circleci/node:8.9.4
-  steps:
+  test:
+   steps:
    - checkout
    - run: npm install
    - run: npm test
