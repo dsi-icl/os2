@@ -12,6 +12,9 @@ general:
 jobs:
   test:
     docker:
+      - image: bouncestorage/swift-aio
+      - run: docker run -P -v /tmp/test_data_store:/swift/nodes -t bouncestorage/swift-aio
+    docker:
       - image: circleci/node:8.9.4
     steps:
       - checkout
