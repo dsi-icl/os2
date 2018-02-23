@@ -17,3 +17,16 @@ jobs:
       - checkout
       - run: npm install
       - run: npm test
+  build:
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
+      - checkout
+      - run: npm run lint
+
+workflows:
+  version: 2
+  test_build:
+    jobs:
+      - build
+      - test
