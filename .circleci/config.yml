@@ -22,7 +22,7 @@ jobs:
       - image: circleci/node:8.9.4
     steps:
       - checkout
-      - run: cp tests/test.config.circle-ci.js tests/test.config.js
+      - run: npm run circle-ci-test-config
       - run: npm install
       - run: npm run lint
 

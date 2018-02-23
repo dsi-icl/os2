@@ -4,6 +4,7 @@
   "description": "Swift OpenStack Object Storage wrapper for Node.js, with large objects support",
   "main": "./src/index.js",
   "scripts": {
+    "circle-ci-test-config": "cp tests/test.config.circle-ci.js tests/test.config.js",
     "test": "node --max-old-space-size=2048 node_modules/jest/bin/jest.js --runInBand --no-cache",
     "lint": "eslint src"
   },
