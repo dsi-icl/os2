@@ -4,6 +4,13 @@
 #
 version: 2
 jobs:
+ test:
+  docker:
+	 - image: circleci/node:8.9.4
+	 steps:
+      - checkout
+      - run: npm install
+	  - run: npm test
  build:
    steps:
     - run:
@@ -14,7 +21,7 @@ jobs:
           sudo mv ~/docker-compose /usr/local/bin/docker-compose
   
     - setup_remote_docker
-
+ 
     - run:
        name: Build & Run docker tests
        command: |
@@ -23,4 +30,11 @@ jobs:
          docker-compose -f ./test/docker-compose.yml up tests
          docker-compose -f ./test/docker-compose.yml run tests install
          docker-compose -f ./test/docker-compose.yml run tests npm test
+		 
+workflows:
+  version: 2
+  test_build:
+    jobs:
+      - test
+	  - build
 
