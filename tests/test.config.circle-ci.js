@@ -1,7 +1,7 @@
 module.exports = {
-    store_url: 'http://127.0.0.1',
-    account_user: 'root',
-    account_password: 'root',
+    store_url: 'http://127.0.0.1:80',
+    account_user: 'test:tester',
+    account_password: 'testing',
     account_name: 'AUTH_test',
     container_name: 'test_container',
     object_name: 'test_object',
