@@ -1,5 +1,7 @@
 # os²
 OpenStack Object Storage wrapper for Node.js 
+[circle-ci-badge]: https://circleci.com/gh/Tezirg/os2.png?circle-token=:circle-token "circle.ci"
+![circle.ci badge][circle-ci-badge]
 ---------------------------------------------
 
 os² is a wrapper for the [OpenStack Object Storage API v1](https://developer.openstack.org/api-ref/object-storage/index.html).
