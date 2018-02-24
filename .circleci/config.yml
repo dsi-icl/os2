@@ -24,6 +24,7 @@ jobs:
       - run: cp tests/test.config.circle-ci.js tests/test.config.js
       - run: npm install
       - run: npm test
+
   build:
     docker:
       - image: circleci/node:8.9.4
