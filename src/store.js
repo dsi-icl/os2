@@ -6,7 +6,7 @@ const request = require('request');
  * @param url {String} Object storage API url
  * @constructor
  */
-function Store(url = 'http://127.0.0.1') {
+function Store(url = 'http://127.0.0.1/') {
     //Init member attributes
     this._url = url;
 
