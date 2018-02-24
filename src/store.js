@@ -49,7 +49,7 @@ Store.prototype.info = function() {
         let options = {
             method: 'GET',
             baseUrl: _this._url,
-            uri: '/show',
+            uri: '/info',
             json: true
         };
 
