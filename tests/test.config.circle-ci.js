@@ -1,8 +1,8 @@
 module.exports = {
     store_url: 'http://localhost:8080',
-    account_user: 'test',
+    account_user: 'test:tester',
     account_password: 'testing',
-    account_name: 'tester',
+    account_name: 'AUTH_test',
     container_name: 'test_container',
     object_name: 'test_object',
     segment_container_name: 'segment_test_container',
