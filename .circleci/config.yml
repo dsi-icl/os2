@@ -26,6 +26,7 @@ jobs:
       - image: circleci/node:8.9.4
       - image: bouncestorage/swift-aio
     steps:
+      - run: grep aufs /proc/filesystems
       - checkout
       - run: cp tests/test.config.circle-ci.js tests/test.config.js
       - run: npm install
@@ -40,4 +41,4 @@ machine:
 test:
   pre:
     - docker build -t bouncestorage/swift-aio
-    - docker run -P -t bouncestorage/swift-aio
+    - docker run -P -v /tmp/swift_test:/swift/nodes -t bouncestorage/swift-aio
