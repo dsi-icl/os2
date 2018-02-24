@@ -18,11 +18,10 @@ test('Store list capabilities', function(done) {
 test('Store list capabilities fail', function(done) {
         expect.assertions(1);
 
-        var test_store = new Store('');
+        var test_store = new Store(testConfig.store_url);
         test_store.info().then(function (features) {
             done.fail(features);
         }, function (error) {
-            console.log(error);
             expect(error).toBeInstanceOf(Error);
             done();
         });
