@@ -42,4 +42,6 @@ machine:
 test:
   pre:
     - docker build -t bouncestorage/swift-aio
-    - sudo docker run -P -v /var/lib/docker/swift_data:/swift/nodes -t bouncestorage/swift-aio
+    - sudo fallocate -l 10G MyDrive.img
+    - sudo mkfs -t aufs /tmp/swift_fs.img
+    - sudo docker run -P -v /tmp/swift_fs.img:/swift/nodes -t bouncestorage/swift-aio
