@@ -3,24 +3,43 @@
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
 version: 2
+general:
+  branches:
+    ignore:
+      - gh-pages
+
+workflows:
+  version: 2
+  test_build:
+    jobs:
+      - build
+      - test
+
 jobs:
- build:
-   steps:
-    - run:
-        name: Install Docker Compose
-        command: |
-          curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-          chmod +x ~/docker-compose
-          sudo mv ~/docker-compose /usr/local/bin/docker-compose
-  
-    - setup_remote_docker
+  build:
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run lint
+  test:
+    docker:
+      - image: circleci/node:8.9.4
+      - image: bouncestorage/swift-aio
+    pre:
+      - sudo docker build -t bouncestorage/swift-aio
+      - sudo docker run -P -v /tmp/swift_fs:/swift/nodes -t bouncestorage/swift-aio
+    steps:
+      - run: grep aufs /proc/filesystems
+      - run: ps auxw
+      - checkout
+      - run: cp tests/test.config.circle-ci.js tests/test.config.js
+      - run: npm install
+      - run: npm test
 
-    - run:
-       name: Build & Run docker tests
-       command: |
-         docker-compose -f ./test/docker-compose.yml build swift
-         docker-compose -f ./test/docker-compose.yml build tests
-         docker-compose -f ./test/docker-compose.yml up tests
-         docker-compose -f ./test/docker-compose.yml run tests install
-         docker-compose -f ./test/docker-compose.yml run tests npm test
-
+machine:
+  timezone:
+    America/Los_Angeles
+  docker:
+    version: latest

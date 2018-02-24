@@ -6,7 +6,7 @@ const request = require('request');
  * @param url {String} Object storage API url
  * @constructor
  */
-function Store(url = 'http://127.0.0.1') {
+function Store(url = 'http://127.0.0.1:8080') {
     //Init member attributes
     this._url = url;
 
@@ -53,9 +53,11 @@ Store.prototype.info = function() {
             json: true
         };
 
-        request(options, function(error, __unused__response, body) {
+        request(options, function(error, response, body) {
             if (error)
                 reject(error);
+			else if ([200, 204].indexOf(response.statusCode) < 0)
+				reject(new Error(response.statusMessage));
             else
                 resolve(body);
         });

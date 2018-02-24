@@ -10,7 +10,7 @@ let buffer = '';
 
 beforeAll(function() {
     return dlo_account.connect().then(function() {
-        buffer = Buffer.alloc(1024 * 1024 * 1024, 42);
+        buffer = Buffer.alloc(1024 * 1024 * 100, 42);
         dlo_container = new Container(dlo_account, testConfig.dlo_container_name);
         return dlo_container.create();
     }, function(error) {
@@ -118,7 +118,7 @@ test('DLO create from single stream, default chunk size', function(done) {
     expect(dlo_account.isConnected()).toBeTruthy();
     expect(dlo_container).toBeDefined();
     let obj = new DynamicLargeObject(dlo_container, testConfig.dlo_object_name, testConfig.dlo_prefix);
-    let test_stream = new MemoryStream(buffer); // 1Go
+    let test_stream = new MemoryStream(buffer); // 100 Mo
     obj.createFromStream(test_stream).then(function (data) {
         expect(data).toBeDefined();
         chunks = Object.assign({}, chunks, data);
@@ -126,11 +126,8 @@ test('DLO create from single stream, default chunk size', function(done) {
     }, function (error) {
         done.fail(error.toString());
     });
-    test_stream.write(buffer); // 2Go
-    test_stream.write(buffer); // 3Go
-    test_stream.write(buffer); // 4Go
-    test_stream.write(buffer); // 5Go
-    test_stream.end(buffer); // 6Go
+    test_stream.write(buffer); // 200 Mo
+    test_stream.end(buffer); // 300 Mo
 });
 
 test('DLO remove manifest and chunks', function(done) {
