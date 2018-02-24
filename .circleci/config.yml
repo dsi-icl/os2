@@ -29,8 +29,6 @@ jobs:
       - image: bouncestorage/swift-aio
     pre:
       - sudo docker build -t bouncestorage/swift-aio
-      - sudo fallocate -l 10G /tmp/swift_fs
-      - sudo mkfs -t ext4 /tmp/swift_fs
       - sudo docker run -P -v /tmp/swift_fs:/swift/nodes -t bouncestorage/swift-aio
     steps:
       - run: grep aufs /proc/filesystems
