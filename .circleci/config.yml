@@ -27,7 +27,7 @@ jobs:
       - image: bouncestorage/swift-aio
     steps:
       - run: grep aufs /proc/filesystems
-      - run: grep -ni dockerd /etc/docker/daemon.json
+      - run: ps auxw
       - checkout
       - run: cp tests/test.config.circle-ci.js tests/test.config.js
       - run: npm install
