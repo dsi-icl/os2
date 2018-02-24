@@ -30,9 +30,7 @@ jobs:
     pre:
       - export PYTHON_EGG_CACHE=~/.egg
       - sudo docker build -t bouncestorage/swift-aio
-      - sudo fallocate -l 10G ~/swift_fs
-      - sudo mkfs -t aufs ~/swift_fs
-      - sudo docker run --user="root" -P -v ~/swift_fs:/swift/nodes -t bouncestorage/swift-aio
+      - sudo docker run -P -v ~/swift_fs:/swift/nodes -t bouncestorage/swift-aio
     steps:
       - run: grep aufs /proc/filesystems
       - run: ps auxw
