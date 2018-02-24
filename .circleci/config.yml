@@ -7,7 +7,12 @@ general:
   branches:
     ignore:
       - gh-pages
-
+workflows:
+  version: 2
+  test_build:
+    jobs:
+      - build
+      - test
 jobs:
   build:
     docker:
@@ -16,7 +21,6 @@ jobs:
       - checkout
       - run: npm install
       - run: npm run lint
-
   test:
     docker:
       - image: circleci/node:8.9.4
@@ -29,9 +33,3 @@ jobs:
       - run: npm install
       - run: npm test
 
-workflows:
-  version: 2
-  test_build:
-    jobs:
-      - build
-      - test
