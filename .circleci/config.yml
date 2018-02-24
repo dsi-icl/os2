@@ -25,10 +25,10 @@ jobs:
     docker:
       - image: circleci/node:8.9.4
     pre:
-    - docker build -t bouncestorage/swift-aio
-    - sudo fallocate -l 10G /tmp/swift_fs
-    - sudo mkfs -t aufs /tmp/swift_fs
-    - sudo docker run -P -v /tmp/swift_fs:/swift/nodes -t bouncestorage/swift-aio
+      - docker build -t bouncestorage/swift-aio
+      - sudo fallocate -l 10G /tmp/swift_fs
+      - sudo mkfs -t aufs /tmp/swift_fs
+      - sudo docker run -P -v /tmp/swift_fs:/swift/nodes -t bouncestorage/swift-aio
     steps:
       - run: grep aufs /proc/filesystems
       - run: ps auxw
