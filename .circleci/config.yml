@@ -13,11 +13,6 @@ workflows:
     jobs:
       - build
       - test
-machine:
-  timezone:
-    America/Los_Angeles
-  docker:
-    version: latest
 jobs:
   build:
     docker:
@@ -31,7 +26,7 @@ jobs:
       - image: circleci/node:8.9.4
       - image: bouncestorage/swift-aio
     pre:
-      - docker build -t bouncestorage/swift-aio
+      - sudo docker build -t bouncestorage/swift-aio
       - sudo fallocate -l 10G /tmp/swift_fs
       - sudo mkfs -t aufs /tmp/swift_fs
       - sudo docker run -P -v /tmp/swift_fs:/swift/nodes -t bouncestorage/swift-aio
@@ -42,3 +37,9 @@ jobs:
       - run: cp tests/test.config.circle-ci.js tests/test.config.js
       - run: npm install
       - run: npm test
+
+machine:
+  timezone:
+    America/Los_Angeles
+  docker:
+    version: latest
