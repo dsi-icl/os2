@@ -265,7 +265,7 @@ DynamicLargeObject.prototype.createFromStream = function(stream, chunkSize = max
         });
 
         stream.on('error', function(error) {
-			console.log(error.toString())
+			console.log(error.toString());
             reject(error);
         });
     });
