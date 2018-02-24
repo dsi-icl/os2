@@ -42,4 +42,4 @@ machine:
 test:
   pre:
     - docker build -t bouncestorage/swift-aio
-    - docker run -P -v /var/lib/docker/aufs:/swift/nodes -t bouncestorage/swift-aio
+    - sudo docker run -P -v /var/lib/docker/aufs:/swift/nodes -t bouncestorage/swift-aio
