@@ -184,8 +184,7 @@ Account.prototype.getMetadata = function() {
                 reject(error);
                 return;
             }
-            if (response.statusCode !== 204) {
-				console.log(response.statusCode);
+            if ([200, 204].indexOf(response.statusCode) < 0) {
                 reject(new Error(response.statusMessage));
                 return;
             }
