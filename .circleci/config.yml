@@ -14,10 +14,9 @@ jobs:
     docker:
       - image: circleci/node:8.9.4
       - image: bouncestorage/swift-aio
-        command: [curl, -v, -H, http://127.0.0.1:8080/auth/v1.0]
     steps:
       - checkout
-      - run: curl -v -H 'X-Storage-User: test:tester' -H 'X-Storage-Pass: testing' http://127.0.0.1:8080/auth/v1.0
+      - run: curl -v -H "X-Storage-User: test:tester" -H "X-Storage-Pass: testing" http://127.0.0.1:8080/auth/v1.0
       - run: swift -A http://127.0.0.1:8080/auth/v1.0 -U test:tester -K testing stat
       - run: cp tests/test.config.circle-ci.js tests/test.config.js
       - run: npm install
