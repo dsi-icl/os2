@@ -40,4 +40,4 @@ machine:
 test:
   pre:
     - docker build -t bouncestorage/swift-aio
-    - docker run -P -v /path/to/data:/swift/nodes -t bouncestorage/swift-aio
+    - docker run -P -v /tmp/swift_test:/swift/nodes -t bouncestorage/swift-aio
