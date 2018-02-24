@@ -13,6 +13,11 @@ workflows:
     jobs:
       - build
       - test
+machine:
+  timezone:
+    America/Los_Angeles
+  docker:
+    version: latest
 jobs:
   build:
     docker:
@@ -37,9 +42,3 @@ jobs:
       - run: cp tests/test.config.circle-ci.js tests/test.config.js
       - run: npm install
       - run: npm test
-
-machine:
-  timezone:
-    America/Los_Angeles
-  docker:
-    version: latest
