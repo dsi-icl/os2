@@ -7,12 +7,14 @@ general:
   branches:
     ignore:
       - gh-pages
+
 workflows:
   version: 2
   test_build:
     jobs:
       - build
       - test
+
 jobs:
   build:
     docker:
@@ -26,6 +28,7 @@ jobs:
       - image: circleci/node:8.9.4
       - image: bouncestorage/swift-aio
     pre:
+      - export PYTHON_EGG_CACHE=~/.egg
       - sudo docker build -t bouncestorage/swift-aio
       - sudo fallocate -l 10G /tmp/swift_fs
       - sudo mkfs -t aufs /tmp/swift_fs
