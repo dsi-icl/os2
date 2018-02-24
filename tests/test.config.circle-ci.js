@@ -1,5 +1,5 @@
 module.exports = {
-    store_url: 'http://127.0.0.1:8080',
+    store_url: 'http://localhost:8080',
     account_user: 'test:tester',
     account_password: 'testing',
     account_name: 'AUTH_test',
