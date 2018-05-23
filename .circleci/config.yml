@@ -34,7 +34,7 @@ jobs:
       - run: grep aufs /proc/filesystems
       - run: ps auxw
       - checkout
-      - run: cp tests/test.config.circle-ci.js tests/test.config.js
+      - run: cp tests/test.config.ci.js tests/test.config.js
       - run: npm install
       - run: npm test
 

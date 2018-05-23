@@ -1,0 +1,42 @@
+sudo: required
+
+language: node_js
+
+services:
+  - docker
+
+node_js:
+  - "6"
+  - "7"
+  - "8"
+  - "9"
+  - "10"
+
+env:
+  global:
+    - "SLEEP_TIME=20"
+  matrix:
+    - "AUTH=TempAuth"
+#   - "AUTH=KeystoneAuth"
+
+script: echo "Running tests against node $(node -v) ..."
+
+before_install:
+    - mkdir "$PWD/swift"
+    - docker run -d -p 8080:8080 -v "$PWD/swift":/swift/nodes -t bouncestorage/swift-aio
+    - curl -o- -L https://yarnpkg.com/install.sh | bash -s --
+    - export PATH="$HOME/.yarn/bin:$PATH"
+    - echo "Waiting for docker container to boot properly for ${SLEEP_TIME}s..." && sleep $SLEEP_TIME
+    - grep aufs /proc/filesystems || true
+    - ps auxw || true
+    - netstat -nltp || true
+    - docker ps -a
+
+install:
+    - yarn --version
+    - yarn install
+
+script:
+    - cp tests/test.config.ci.js tests/test.config.js
+    - yarn lint
+    - yarn test

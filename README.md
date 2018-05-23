@@ -2,8 +2,10 @@
 OpenStack Object Storage wrapper for Node.js 
 ---------------------------------------------
 
-[circle-ci-badge]: https://circleci.com/gh/Tezirg/os2.png?circle-token=:circle-token "circle.ci"
-![circle.ci badge][circle-ci-badge]
+[![Travis](https://img.shields.io/travis/dsi-icl/os2/master.svg?style=flat-square)](https://travis-ci.org/dsi-icl/os2) 
+[![David](https://img.shields.io/david/dsi-icl/os2.svg?style=flat-square)](https://david-dm.org/dsi-icl/os2) 
+[![David](https://img.shields.io/david/dev/dsi-icl/os2.svg?style=flat-square)](https://david-dm.org/dsi-icl/os2?type=dev)
+
 
 os² is a wrapper for the [OpenStack Object Storage API v1](https://developer.openstack.org/api-ref/object-storage/index.html).
 Use it to communicate with an Object Storage via it's REST api without managing the HTTP requests.
