@@ -1,0 +1,18 @@
+
+version: '3'
+services:
+    swift:
+        image: bouncestorage/swift-aio
+        ports:
+            - 8080:8080
+
+    tests:
+        build:
+            context: ../
+            dockerfile: ./test/Dockerfile
+        depends_on:
+            - swift
+        links:
+            - swift
+        ports:
+            - 80:80
