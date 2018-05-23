@@ -11,7 +11,7 @@ let buffer = '';
 
 beforeAll(function() {
     return slo_account.connect().then(function() {
-        buffer = Buffer.alloc(1024 * 1024 * 1024, 42);
+        buffer = Buffer.alloc(1024 * 1024 * 100, 42);
         slo_container = new Container(slo_account, testConfig.slo_container_name);
         return slo_container.create();
     }, function(error) {
@@ -90,9 +90,9 @@ test('SLO create from large stream, 500Mo chunks', function(done) {
     }, function (error) {
         done.fail(error.toString());
     });
-    test_stream.write(buffer); // 1Go
-    test_stream.write(buffer); // 2Go
-    test_stream.end('Bye bye 2Go +');
+    test_stream.write(buffer); // 100 Mo
+    test_stream.write(buffer); // 200 Mo
+    test_stream.end('Bye bye 2Mo +');
 });
 
 test('SLO remove manifest and remove chunks again', function(done) {
