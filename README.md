@@ -2,7 +2,7 @@
 OpenStack Object Storage wrapper for Node.js 
 ---------------------------------------------
 
-[![Travis](https://img.shields.io/travis/dsi-icl/os2/master.svg?style=flat-square)](https://travis-ci.org/dsi-icl/os2) 
+[![Travis](https://img.shields.io/travis/dsi-icl/os2/master.svg?style=flat-square)](https://travis-ci.com/dsi-icl/os2) 
 [![David](https://img.shields.io/david/dsi-icl/os2.svg?style=flat-square)](https://david-dm.org/dsi-icl/os2) 
 [![David](https://img.shields.io/david/dev/dsi-icl/os2.svg?style=flat-square)](https://david-dm.org/dsi-icl/os2?type=dev)
 
@@ -27,7 +27,7 @@ npm install os2 --global
 Or add os² as a dependency to a node.js project using the `package.json` file:
 ```json
 "dependencies": {
-  "os2": "0.0.1"
+  "os2": "0.0.13"
 }
 ```
 and then update the project's dependencies
