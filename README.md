@@ -2,7 +2,8 @@
 OpenStack Object Storage wrapper for Node.js 
 ---------------------------------------------
 
-[![Travis](https://img.shields.io/travis/dsi-icl/os2/master.svg?style=flat-square)](https://travis-ci.com/dsi-icl/os2) 
+[![Travis](https://img.shields.io/travis/dsi-icl/os2/master.svg?style=flat-square)](https://travis-ci.com/dsi-icl/os2) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdsi-icl%2Fos2.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdsi-icl%2Fos2?ref=badge_shield)
+
 [![David](https://img.shields.io/david/dsi-icl/os2.svg?style=flat-square)](https://david-dm.org/dsi-icl/os2) 
 [![David](https://img.shields.io/david/dev/dsi-icl/os2.svg?style=flat-square)](https://david-dm.org/dsi-icl/os2?type=dev)
 
@@ -421,3 +422,7 @@ account.connect().then(function() {
 console.error(error.toString());
 });
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdsi-icl%2Fos2.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdsi-icl%2Fos2?ref=badge_large)
