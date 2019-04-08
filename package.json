@@ -30,15 +30,15 @@
   },
   "homepage": "https://github.com/dsi-icl/os2#readme",
   "devDependencies": {
-    "babel-core": "6.26.3",
-    "babel-eslint": "8.2.3",
-    "babel-env": "2.4.1",
-    "eslint": "4.19.1",
-    "jest": "22.4.4"
+    "@babel/core": "7.4.3",
+    "@babel/preset-env": "7.4.3",
+    "babel-eslint": "10.0.1",
+    "eslint": "5.16.0",
+    "jest": "24.7.1"
   },
   "dependencies": {
     "memorystream": "0.3.1",
-    "request": "2.87.0",
-    "uuid": "3.2.1"
+    "request": "2.88.0",
+    "uuid": "3.3.2"
   }
 }
