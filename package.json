@@ -1,6 +1,6 @@
 {
   "name": "os2",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Swift OpenStack Object Storage wrapper for Node.js, with large objects support",
   "main": "./src/index.js",
   "scripts": {
